@@ -1,0 +1,16 @@
+.TaskBounds {
+    position: relative;
+    background-color: bisque;
+    height: 70px;
+}
+
+.TaskWrapper {
+    position: absolute;
+    height: 90%;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+
+    background-color: palevioletred;
+    border-radius: 8px;
+}

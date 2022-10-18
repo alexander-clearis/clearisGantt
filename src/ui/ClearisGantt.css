@@ -1,0 +1,36 @@
+/*
+Place your custom CSS here
+*/
+@import "Interval.css";
+@import "Content.css";
+@import "Task.css";
+
+
+.GanttLayout {
+    display: flex;
+    flex-flow: column;
+    min-height: 83vh;
+    max-height: 83vh;
+}
+
+.ChartBody {
+    flex-grow: 1;
+    display: flex;
+}
+
+.ChartContent {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 0 !important;
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+
+.BodyHeader {
+    height: 12.5%;
+}
+.TimeScale.BodyHeader {
+    display: flex;
+    flex-wrap: nowrap;
+}

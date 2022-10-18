@@ -1,0 +1,17 @@
+.CanvasContainer {
+    width: 100%;
+    height: auto;
+}
+
+.Canvas {
+    position: relative;
+    height: 100%;
+}
+
+.TaskLayer {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    background: blue;
+}
+

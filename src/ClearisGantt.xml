@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget id="clearis.clearisgantt.ClearisGantt" pluginWidget="true" needsEntityContext="true" offlineCapable="false"
+        supportedPlatform="Web"
+        xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../node_modules/mendix/custom_widget.xsd">
+    <name>Clearis Gantt</name>
+    <description>My widget description</description>
+    <icon/>
+    <properties>
+        <propertyGroup caption="Data source">
+            <property key="chartTitle" type="textTemplate">
+                <caption>Title</caption>
+                <description/>
+            </property>
+            <property key="activity" type="datasource" isList="true" required="true">
+                <caption>Activity Entity</caption>
+                <description/>
+            </property>
+            <property key="name" type="attribute" dataSource="activity" required="true">
+                <caption>Name</caption>
+                <description>Activity name</description>
+                <attributeTypes>
+                    <attributeType name="String"/>
+                </attributeTypes>
+            </property>
+            <property key="StartDate" type="attribute" dataSource="activity" required="true">
+                <caption>Start Date</caption>
+                <description>Activity Start Date</description>
+                <attributeTypes>
+                    <attributeType name="DateTime"/>
+                </attributeTypes>
+            </property>
+            <property key="EndDate" type="attribute" dataSource="activity" required="true">
+                <caption>End Date</caption>
+                <description>Activity End Date</description>
+                <attributeTypes>
+                    <attributeType name="DateTime"/>
+                </attributeTypes>
+            </property>
+        </propertyGroup>
+    </properties>
+</widget>
