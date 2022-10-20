@@ -9,7 +9,7 @@ export default class ClearisGantt extends Component<ClearisGanttContainerProps> 
 
   constructor(props: ClearisGanttContainerProps, context: any) {
     super(props, context);
-    this.service = new ClearisGanttController(this.props.chartTitle.value ? this.props.chartTitle.value : this.props.chartTitle.status);
+    this.service = new ClearisGanttController(this.props.chartTitle.value ? this.props.chartTitle.value : this.props.chartTitle.status, 1500);
   }
 
   updateChartTitle() {

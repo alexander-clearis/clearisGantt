@@ -7,9 +7,8 @@ export interface ControlCollectionProps extends propsGCService {
 }
 
 export class CG_Controls extends Component<ControlCollectionProps> {
-  constructor(props: ControlCollectionProps, kaasje: string, context: any) {
+  constructor(props: ControlCollectionProps, context: any) {
     super(props, context);
-    console.log(kaasje)
   }
 
   render(): ReactNode {

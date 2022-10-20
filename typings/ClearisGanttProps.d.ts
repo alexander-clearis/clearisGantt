@@ -19,12 +19,10 @@ export interface ClearisGanttContainerProps {
 }
 
 export interface ClearisGanttPreviewProps {
-    className: string;
+    class: string;
     style: string;
-    styleObject?: CSSProperties;
-    readOnly: boolean;
     chartTitle: string;
-    activity: {} | { type: string } | null;
+    activity: {} | null;
     name: string;
     StartDate: string;
     EndDate: string;

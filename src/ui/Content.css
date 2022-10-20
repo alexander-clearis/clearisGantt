@@ -8,10 +8,31 @@
     height: 100%;
 }
 
-.TaskLayer {
+.CanvasLayer {
     position: absolute;
     width: 100%;
     height: auto;
-    background: blue;
+}
+
+.TaskLayer {
+
+}
+
+
+.CanvasLayer {
+    height: 100%;
+}
+
+.ScaleMarker {
+    height: 100%;
+    width: 1px;
+    position: absolute;
+    background: lightgray;
+}
+
+.DateMarker {
+    height: 100%;
+    width: 1px;
+    position: absolute;
 }
 

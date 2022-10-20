@@ -1,12 +1,25 @@
 
 .Interval {
+    box-shadow: 1px 0 0 0 lightgray;
 }
+.Interval:first-child {
+    box-shadow: none;
+
+
+}
+
 .IntervalRow {
     display: flex;
 }
+
 .IntervalCell {
+    box-shadow: 1px 0 0 0 lightgray;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+}
+
+.IntervalCell:first-child {
+    box-shadow: none;
 }
 

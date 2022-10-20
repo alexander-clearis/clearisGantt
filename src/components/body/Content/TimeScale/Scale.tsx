@@ -9,7 +9,7 @@ export interface IntervalHeaderProps {
   date: Date;
 }
 
-export class Interval extends Component<IntervalHeaderProps> {
+export class Scale extends Component<IntervalHeaderProps> {
   constructor(props: IntervalHeaderProps, context: any) {
     super({
       width: props.width,
@@ -77,10 +77,12 @@ export class Interval extends Component<IntervalHeaderProps> {
       "IntervalCell": true, "Parent": true
     });
     const render_x_times = this.props.scaleMode.parent_in_view;
-    const width = (1 / render_x_times) * 100;
+    const width = this.props.width / render_x_times;
+
+    console.log("width = ", width)
     for (let i = 0; i < render_x_times; i++) {
       nodes.push(
-        <div className={classes} style={{ width: width + "%" }}>
+        <div className={classes} style={{ width: width + "px" }}>
           {this.props.scaleMode.parent.dateToIntervalLabel(this.props.scaleMode.parent.dateByIndex(this.props.date, i))}
         </div>
       );

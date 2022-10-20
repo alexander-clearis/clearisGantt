@@ -5,7 +5,7 @@ import { ClearisGanttController } from "./util/ClearisGanttController";
 
 export class preview extends Component<ClearisGanttPreviewProps> {
     render(): ReactNode {
-        return <ClearisGanttConainter GC_Service={new ClearisGanttController(this.props.chartTitle)} />;
+        return <ClearisGanttConainter GC_Service={new ClearisGanttController(this.props.chartTitle, 1500)} />;
     }
 }
 

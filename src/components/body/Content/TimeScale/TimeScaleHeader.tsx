@@ -1,11 +1,10 @@
 import { Component, createElement, ReactNode } from "react";
 import { ScaleMode } from "../../../../util/ScaleMode";
 import { Timeline } from "../../../../util/Timeline";
-import { Interval } from "./Interval";
+import { Scale } from "./Scale";
 
 export interface TimeScaleHeaderProps {
   timeLine: Timeline;
-  viewLength: number;
 }
 
 export interface TimeScaleHeaderState {
@@ -24,11 +23,10 @@ export class TimeScaleHeader extends Component<TimeScaleHeaderProps> {
 
   private renderScale(): ReactNode[] {
     const nodes: ReactNode[] = [];
-    console.log("SCALES ON TIME LINE: ", this.props.timeLine.scalesOnTimeLine());
-    for (let i = 0; this.state.scaleMode.parent.dateByIndex(this.state.start, i).valueOf() < this.state.end.valueOf(); i++) {
-      nodes.push(<Interval width={this.props.viewLength}
-                           scaleMode={this.state.scaleMode}
-                           date={this.state.scaleMode.parent.dateByIndex(this.state.start, i)} />);
+    for (let i = 0; this.state.scaleMode.parent.dateByIndex(this.state.start, i).valueOf() < this.state.end.valueOf(); i = i+ this.props.timeLine.scaleMode.parent_in_view) {
+      nodes.push(<Scale width={this.props.timeLine.singleScaleLength}
+                        scaleMode={this.state.scaleMode}
+                        date={this.state.scaleMode.parent.dateByIndex(this.state.start, i)} />);
     }
     return nodes;
   }
@@ -41,7 +39,7 @@ export class TimeScaleHeader extends Component<TimeScaleHeaderProps> {
 
   render() {
     return <div className="TimeScale BodyHeader"
-                style={{ width: this.props.viewLength * this.props.timeLine.scalesOnTimeLine() }}>
+                style={{ width: this.props.timeLine.timelinePixelLength()+"px" }}>
       {
         this.renderScale()
       }
