@@ -1,58 +1,103 @@
-import React from "react";
-
 export interface iTask {
-    get name(): string;
+    getID(): string;
 
-    get start(): Date;
+    getName(): string;
 
-    get end(): Date;
+    getStart(): Date;
 
-    get colour(): string | undefined;
+    getEnd(): Date;
 
-    get ref(): React.RefObject<unknown>;
+    getColour(): string | undefined;
+
+    getChildren(): iTask[] | undefined;
+
+    addChildren(...children: iTask[]): void;
+
+    setParent(parent: iTask): void;
+    getParent(): iTask | undefined;
+    removeParent(): void;
+    // something for the view!!
+    // display(value: boolean): void;
+    //
+    // getDisplay(): boolean;
+    //
+    // getDisplayChildren(): boolean;
+    //
+    // displayChildren(value: boolean): void;
+    //
+    // toggleDisplayChildren(): boolean;
 }
 
+export abstract class baseTask implements iTask {
+    protected _id: string;
+    protected _name: string;
+    protected _start: Date;
+    protected _end: Date;
+    protected _parent?: iTask;
+    protected _children?: iTask[];
 
-export class mockTask implements iTask {
-    private _name: string;
-    private _start: Date;
-    private _end: Date;
-    private _children: iTask[] = [];
-    private _ref: React.RefObject<unknown> = React.createRef();
 
-    constructor(name: string, start: Date, end: Date, children?: iTask[]) {
+    constructor(id: string, name: string, start: Date, end: Date, parent?: iTask, children?: iTask[]) {
+        this._id = id;
         this._name = name;
         this._start = start;
         this._end = end;
-        if (children) {
-            this._children.concat(children)
-        }
+        this._parent = parent;
+        this._children = children;
+
+        console.log(this)
     }
 
-    get name(): string {
+
+    public getID(): string {
+        return this._id;
+    }
+
+    public getName(): string {
         return this._name;
     }
 
 
-    get start(): Date {
+    public getStart(): Date {
         return this._start;
     }
 
-    get end(): Date {
+    public getEnd(): Date {
         return this._end;
     }
 
-    get children(): iTask[] {
+    public getChildren(): iTask[] | undefined {
         return this._children;
     }
 
-    get colour(): string {
+    public getColour(): string {
         return "";
     }
 
-    get ref(): React.RefObject<unknown> {
-        return this._ref;
+    public addChildren(...children: iTask[]): void {
+        for (let i = 0; i < children.length; i++) {
+            if (!this._children) {
+                this._children = [];
+            }
+            if (!this._children.find(value => value.getID() === children[i].getID())) {
+                this._children.push(children[i]);
+            }
+        }
     }
 
+    getParent(): iTask | undefined {
+        return this._parent;
+    }
+
+    removeParent(): void {
+        this._parent = undefined;
+    }
+
+    setParent(parent: iTask): void {
+        this._parent = parent;
+    }
+}
+
+export class mockTask extends baseTask implements iTask {
 
 }

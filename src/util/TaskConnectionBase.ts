@@ -1,7 +1,13 @@
 import {iTask} from "./TaskModel";
 import React from "react";
 
-export class TaskConnectionBase {
+export interface iTaskConnection {
+    getParent(): iTask
+    getChild(): iTask
+    getRef(): React.RefObject<unknown>
+}
+
+export class TaskConnectionBase implements iTaskConnection{
     private _parent: iTask;
     private _child: iTask;
     private _ref: React.RefObject<any> = React.createRef();
@@ -12,15 +18,15 @@ export class TaskConnectionBase {
         this._child = child;
     }
 
-    get parent(): iTask {
+    getParent(): iTask {
         return this._parent;
     }
 
-    get child(): iTask {
+    getChild(): iTask {
         return this._child;
     }
 
-    get ref(): React.RefObject<unknown> {
+    getRef(): React.RefObject<unknown> {
         return this._ref;
     }
 }

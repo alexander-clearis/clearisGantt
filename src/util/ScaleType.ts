@@ -1,3 +1,4 @@
+
 export abstract class ScaleType {
     protected abstract mode: string;
 
@@ -24,4 +25,6 @@ export abstract class ScaleType {
     getName(): string {
         return this.mode;
     };
+
+
 }

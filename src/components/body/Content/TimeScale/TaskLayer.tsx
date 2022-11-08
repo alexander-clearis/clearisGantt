@@ -1,69 +1,122 @@
-import React, {Component, createElement, ReactNode} from "react";
+import {createElement, Fragment, FunctionComponent, ReactNode, useReducer, useState} from "react";
 import {propsGCService} from "../../../../util/propsGCService";
-import {TaskComponent} from "../Tasks/TaskComponent";
-import {TaskConnector} from "../Tasks/TaskConnector";
-import Xarrow, {Xwrapper} from "react-xarrows";
-
+import {TaskView} from "../Tasks/TaskView";
+import {Xwrapper} from "react-xarrows";
+import {iTask} from "../../../../util/TaskModel";
+import {TaskConnectorParentcChild} from "../Tasks/TaskConnectorParentcChild";
+import {TaskConnectionBase} from "../../../../util/TaskConnectionBase";
 
 export interface TaskLayerProps extends propsGCService {
     zIndex: number;
 }
 
-interface propsss {
-    position_x: number
-    position_y: number
-    // id: string
+export interface renderTreeState {
+    renderTaskStateTree: renderTaskState[];
 }
 
-class Box extends Component<propsss> {
-    render() {
-        return <div style={{
-            background: "blue",
-            position: "absolute",
-            left: this.props.position_x,
-            bottom: this.props.position_y,
-            width: "50px",
-            height: "50px"
-        }}></div>;
-    }
+export type renderTaskState = {
+    display: boolean,
+    task: iTask,
+    children: renderTaskState[] | undefined;
+    displayChildren: boolean;
 }
 
-export class TaskLayer extends Component<TaskLayerProps> {
+export const TaskLayer: FunctionComponent<TaskLayerProps> = (props) => {
 
-    refA: React.RefObject<any> = React.createRef();
-    refB: React.RefObject<any> = React.createRef();
-
-    renderTasks(): ReactNode[] {
-        return this.props.GC_Service.taskController.getTasks().map(value =>
-            <TaskComponent task={value}
-                           timeline={this.props.GC_Service.timeLine}
-            />);
+    function generateRenderTaskState(task: iTask, display: boolean): renderTaskState {
+        return {
+            display: display,
+            task: task,
+            displayChildren: false,
+            children: task.getChildren()?.map(value => generateRenderTaskState(value, false)).sort((t1, t2) => {
+                if (t1.task.getStart().getTime() > t2.task.getStart().getTime()) {
+                    return 1
+                } else if (t1.task.getStart().getTime() < t2.task.getStart().getTime()) {
+                    return -1
+                }
+                return 0
+            })
+        }
     }
 
-    renderConnections(): ReactNode[] {
-        return this.props.GC_Service.taskController.getConnections().map(value => <TaskConnector
-            taskConnection={value}
-        />)
+    function initStateTree(): renderTaskState[] {
+        const renderableTasks = props.GC_Service.taskController().getAllTasks().filter(value =>
+            value.getParent() == undefined
+        ).sort((t1, t2) => {
+            if (t1.getStart().getTime() > t2.getStart().getTime()) {
+                return 1
+            } else if (t1.getStart().getTime() < t2.getStart().getTime()) {
+                return -1
+            }
+            return 0
+        });
+        const renderTaskStateTree: renderTaskState[] = [];
+        for (let i = 0; i < renderableTasks.length; i++) {
+            renderTaskStateTree.push(generateRenderTaskState(renderableTasks[i], true))
+        }
+        return renderTaskStateTree;
     }
 
-    render() {
-        return <div className={"TaskLayer CanvasLayer"} style={{zIndex: this.props.zIndex}}>
-            {/* {this.renderTasks()} */}
+    // @ts-ignore
+    const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+
+    const [taskLayerState, setTaskLayerState] = useState<renderTreeState>({renderTaskStateTree: initStateTree()})
+    const toggleChildren = (): void => {
+        forceUpdate()
+        setTaskLayerState(taskLayerState)
+    }
+    // je roept updateTaskLayerTree aan.
+    // die vul je met geupdate tree.
+
+
+    function renderTasks(): ReactNode[] {
+        return taskLayerState.renderTaskStateTree.map(value => renderTaskTreeMember(value));
+    }
+
+    function renderParentChildConnections(parent: renderTaskState): ReactNode [] {
+        const r: ReactNode[] = [];
+        if(parent.display && parent.displayChildren) {
+            parent.children?.forEach(item => {
+                r.push(<TaskConnectorParentcChild taskConnection={new TaskConnectionBase(parent.task, item.task)}/>);
+            })
+        }
+        return r;
+    }
+
+    function renderTaskTreeMember(task: renderTaskState): ReactNode {
+        const self = <TaskView defaultState={task} taskController={props.GC_Service.taskController()}
+                               timeline={props.GC_Service.timeLine()} onToggleChildren={toggleChildren}/>;
+        const children = renderTaskTreeMemberChildren(task);
+        const TaskConnections: ReactNode = renderParentChildConnections(task)
+        if (children.length > 0) {
+            for (let i = 0; i < children.length; i++) {
+
+            }
+        }
+        return <Fragment>
+            {self}
+            {TaskConnections}
+            {children}
+        </Fragment>
+    }
+
+    function renderTaskTreeMemberChildren(taskTreeMember: renderTaskState): ReactNode[] {
+        const r: ReactNode[] = [];
+        if (taskTreeMember.display && taskTreeMember.displayChildren) {
+            if (taskTreeMember.children) {
+                for (let i = 0; i < taskTreeMember.children.length; i++) {
+                    r.push(renderTaskTreeMember(taskTreeMember.children[i]))
+
+                }
+            }
+        }
+        return r
+    }
+
+    return <div className={"TaskLayer CanvasLayer"} style={{zIndex: props.zIndex}}>
+        <Xwrapper>
+            {renderTasks()}
             {/* {this.renderConnections()} */}
-
-            <div style={{
-                width: "1000px",
-                position: "relative",
-                height: "500px",
-                border: "1px solid red"
-            }}>
-                <Xwrapper>
-                    <Box ref={this.refA} position_x={0} position_y={0}> </Box>
-                    <Box ref={this.refB} position_x={500} position_y={300}> </Box>
-                    <Xarrow start={this.refB} end={this.refA}></Xarrow>
-                </Xwrapper>
-            </div>
-
-        </div>;
-    }
+        </Xwrapper>
+    </div>;
 }

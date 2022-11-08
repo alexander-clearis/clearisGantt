@@ -18,7 +18,7 @@ export class ChartHeader extends Component<iChartHeader> {
         <div className="container-fluid">
           <div className="row">
             <div className="col-lg-6 col-md-6 col-6">
-              <ChartTitle title={this.props.GC_Service.chartTitle}></ChartTitle>
+              <ChartTitle title={this.props.GC_Service.getChartTitle()}></ChartTitle>
             </div>
             <div className="col-lg-6 col-md-6 col-6">
               <CG_Controls GC_Service={this.props.GC_Service}></CG_Controls>

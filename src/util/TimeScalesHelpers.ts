@@ -57,12 +57,18 @@ export class WeekScale extends ScaleType {
     }
 
     dateToIntervalLabel(labelDate: Date): string {
-        return "Week " + this.getWeekNr(labelDate);
+        return "Week " + this.getWeekNr(labelDate) + " " + labelDate.getFullYear();
     }
 
     floorDate(date: Date): Date {
         const r: Date = new Date(date);
         r.setDate(date.getDate() - date.getDay() + 1);
+        return r;
+    }
+
+    ceilDate(date: Date): Date {
+        const r: Date = this.dateByIndex(this.floorDate(date), 1);
+        r.setMinutes(-1)
         return r;
     }
 

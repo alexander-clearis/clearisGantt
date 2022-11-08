@@ -1,48 +1,44 @@
-import { Component, createElement, ReactNode } from "react";
-import { ScaleMode } from "../../../../util/ScaleMode";
-import { Timeline } from "../../../../util/Timeline";
-import { Scale } from "./Scale";
+import {Component, createElement, ReactNode} from "react";
+import {Timeline} from "../../../../util/Timeline";
+import {Scale} from "./Scale";
 
 export interface TimeScaleHeaderProps {
-  timeLine: Timeline;
+    timeLine: Timeline;
 }
-
-export interface TimeScaleHeaderState {
-  scaleMode: ScaleMode;
-  start: Date;
-  end: Date;
-}
+//
+// export interface TimeScaleHeaderState {
+//     timeLine: Timeline;
+// }
 
 export class TimeScaleHeader extends Component<TimeScaleHeaderProps> {
-  state: TimeScaleHeaderState = {
-    scaleMode: this.props.timeLine.scaleMode,
-    start: this.props.timeLine.startDate,
-    end: this.props.timeLine.endDate
-  };
 
 
-  private renderScale(): ReactNode[] {
-    const nodes: ReactNode[] = [];
-    for (let i = 0; this.state.scaleMode.parent.dateByIndex(this.state.start, i).valueOf() < this.state.end.valueOf(); i = i+ this.props.timeLine.scaleMode.parent_in_view) {
-      nodes.push(<Scale width={this.props.timeLine.singleScaleLength}
-                        scaleMode={this.state.scaleMode}
-                        date={this.state.scaleMode.parent.dateByIndex(this.state.start, i)} />);
+
+    constructor(props: TimeScaleHeaderProps) {
+        super(props);
+        // this.props = {
+        //     timeLine: this.props.timeLine,
+        // };
     }
-    return nodes;
-  }
 
 
-  constructor(props: TimeScaleHeaderProps) {
-    super(props);
-  }
+    private renderScale(): ReactNode[] {
+        const nodes: ReactNode[] = [];
+        console.log(this.props.timeLine)
+        for (let i = 0; this.props.timeLine.scaleMode().parent.dateByIndex(this.props.timeLine.startDate(), i).valueOf() < this.props.timeLine.endDate().valueOf(); i = i + this.props.timeLine.scaleMode().parent_in_view) {
+            nodes.push(<Scale width={this.props.timeLine.singleScaleLength()}
+                              scaleMode={this.props.timeLine.scaleMode()}
+                              date={this.props.timeLine.scaleMode().parent.dateByIndex(this.props.timeLine.startDate(), i)}/>);
+        }
+        return nodes;
+    }
 
-
-  render() {
-    return <div className="TimeScale BodyHeader"
-                style={{ width: this.props.timeLine.timelinePixelLength()+"px" }}>
-      {
-        this.renderScale()
-      }
-    </div>;
-  }
+    render() {
+        return <div className="TimeScale BodyHeader"
+                    style={{width: this.props.timeLine.timelinePixelLength() + "px"}}>
+            {
+                this.renderScale()
+            }
+        </div>;
+    }
 }

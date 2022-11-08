@@ -10,7 +10,7 @@ export class ScaleControl extends Component<iCG_ControlScale> {
     const node: ReactNode[] = [];
     for (let i = 0; i < this.props.GC_Service.scaleModeControllers.length; i++) {
       node.push(<option value={(this.props.GC_Service.scaleModeControllers[i]).label}
-                        selected={this.props.GC_Service.timeLine.scaleMode.label === this.props.GC_Service.scaleModeControllers[i].label}>
+                        selected={this.props.GC_Service.timeLine().scaleMode().label === this.props.GC_Service.scaleModeControllers[i].label}>
         {this.props.GC_Service.scaleModeControllers[i].label}
       </option>);
     }

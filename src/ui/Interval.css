@@ -2,9 +2,8 @@
 .Interval {
     box-shadow: 1px 0 0 0 lightgray;
 }
-.Interval:first-child {
-    box-shadow: none;
-
+.Interval {
+    box-shadow: none
 
 }
 

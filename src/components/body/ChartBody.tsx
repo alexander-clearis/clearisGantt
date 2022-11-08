@@ -10,7 +10,7 @@ export class ChartBody extends Component<CG_BodyProps> {
   render(): ReactNode {
     return (
       <div className={"mx-groupbox-body ChartBody"}>
-          <ChartContent GC_Service={this.props.GC_Service}></ChartContent>
+          <ChartContent GC_Service={this.props.GC_Service} ref={this.props.GC_Service.chartContentRef()}></ChartContent>
       </div>
     );
   }

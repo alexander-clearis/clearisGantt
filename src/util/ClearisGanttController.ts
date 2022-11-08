@@ -2,24 +2,27 @@ import {ScaleMode} from "./ScaleMode";
 import {DayScale, MonthScale, WeekScale, YearScale} from "./TimeScalesHelpers";
 import {Timeline} from "./Timeline";
 import {iTaskController, mockTaskController} from "./TaskController";
+import {ChartContent} from "../components/body/ChartContent";
+import React from "react";
 
 export interface iClearisGanttController {
     readonly scaleModeControllers: ScaleMode[];
 
-    get chartTitle(): string;
+    getChartTitle(): string;
 
-    set chartTitle(value: string);
+    setChartTitle(value: string): void;
 
-    get timeLine(): Timeline;
+    timeLine(): Timeline;
 
     changeScale(newScale: ScaleMode): void;
 
-    get taskController(): iTaskController;
+    taskController(): iTaskController;
 
-    get viewLength(): number;
+    viewLength(): number;
 
-    get viewHeight(): number;
+    viewHeight(): number;
 
+    chartContentRef(): React.RefObject<ChartContent>
 }
 
 export class ClearisGanttController implements iClearisGanttController {
@@ -27,14 +30,14 @@ export class ClearisGanttController implements iClearisGanttController {
     private _timeLine: Timeline;
     private _taskController: iTaskController;
 
+    private _chartContent: React.RefObject<ChartContent> = React.createRef<ChartContent>();
+
     private _viewLength: number;
     private _viewHeigth: number;
 
     readonly scaleModeControllers = [
         new ScaleMode("Day of the week", new WeekScale(), 1, new DayScale()),
         new ScaleMode("Month", new YearScale(), 1, new MonthScale()),
-        new ScaleMode("Year", new YearScale(), 1, new MonthScale()),
-        new ScaleMode("Year", new YearScale(), 4)
     ];
 
     constructor(name: string, singelIntervalLength: number) {
@@ -47,33 +50,38 @@ export class ClearisGanttController implements iClearisGanttController {
         this._viewHeigth = 640;
     }
 
-    get chartTitle(): string {
+    getChartTitle(): string {
         return this._chartTitle;
     }
 
-    set chartTitle(value: string) {
+    setChartTitle(value: string) {
         this._chartTitle = value;
     }
 
-    get timeLine(): Timeline {
+    timeLine(): Timeline {
         return this._timeLine;
     }
 
     public changeScale(newScale: ScaleMode): void {
-        this._timeLine = new Timeline(newScale, this.viewLength, this._timeLine.startDate, this._timeLine.endDate);
+        this._timeLine = new Timeline(newScale, this.viewLength(), this._timeLine.startDate(), this._timeLine.endDate());
+        this._chartContent.current?.newTimeLine(this._timeLine);
     }
 
-    get taskController(): iTaskController {
+    taskController(): iTaskController {
         return this._taskController;
     }
 
 
-    get viewLength(): number {
+    viewLength(): number {
         return this._viewLength;
     }
 
-    get viewHeight(): number {
+    viewHeight(): number {
         return this._viewHeigth;
+    }
+
+    chartContentRef(): React.RefObject<ChartContent> {
+        return this._chartContent;
     }
 }
 
