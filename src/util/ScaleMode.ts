@@ -17,19 +17,19 @@ export class ScaleMode {
   public relativeScaleType(): ScaleType {
     return this._child ? this._child : this._parent;
   }
-  get parent(): ScaleType {
+  parent(): ScaleType {
     return this._parent;
   }
 
-  get parent_in_view(): number {
+  parent_in_view(): number {
     return this._parent_in_view;
   }
 
-  get child(): ScaleType | undefined {
+  child(): ScaleType | undefined {
     return this._child;
   }
 
-  get label(): string {
+  label(): string {
     return this._label;
   }
 }

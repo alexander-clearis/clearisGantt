@@ -1,6 +1,6 @@
 import React, {createElement, FunctionComponent, useState} from "react";
 import {DraggableData, Rnd} from "react-rnd";
-import {Timeline} from "../../../../util/Timeline";
+import {iTimeline} from "../../../../util/ITimeline";
 import {useXarrow} from "react-xarrows";
 import {iTaskController} from "../../../../util/TaskController";
 import {renderTaskState} from "../TimeScale/TaskLayer";
@@ -10,7 +10,7 @@ import {DraggableEvent} from "react-draggable";
 export interface TaskProps {
     defaultState: renderTaskState;
     taskController: iTaskController
-    timeline: Timeline;
+    timeline: iTimeline;
     onToggleChildren: () => void;
 }
 
@@ -23,13 +23,11 @@ type posAndWidthState = {
 export const TaskView: FunctionComponent<TaskProps> = (props) => {
     const updateArrow = useXarrow();
     const elemID = "Task-A-" + props.defaultState.task.getID();
-    const rndRef = React.createRef<Rnd>()
-
     const getOriginalX = props.timeline.relativePosistion(props.defaultState.task.getStart());
     const getOriginalWidth = props.timeline.lengthOnTimeLine(props.defaultState.task.getStart(), props.defaultState.task.getEnd());
+    const rndRef = React.useRef<Rnd>(null);
 
-
-    const [posAndWidth, setPosAndWidth] = useState<posAndWidthState>({width: getOriginalWidth, x: getOriginalX});
+    const [posAndWidth] = useState<posAndWidthState>({width: getOriginalWidth, x: getOriginalX});
 
     const getDefault = (): { x: number, y: number, width: number | string, height: number | string } => {
         return {
@@ -55,19 +53,16 @@ export const TaskView: FunctionComponent<TaskProps> = (props) => {
     }
 
 
-    const onDragStop = (e: DraggableEvent, data: DraggableData) => {
-        console.log("DRAG STOP")
-        console.log(e)
-        console.log(data)
-        if(data.x === posAndWidth.x){
-            setPosAndWidth({x: data.x, width: posAndWidth.width})
+    const onDragStop = (_e: DraggableEvent, data: DraggableData): void => {
+        snapOnDrag(data);
+    }
+
+    const snapOnDrag = (data: DraggableData): void => {
+        if (rndRef) {
+            rndRef.current?.updatePosition({x: props.timeline.snapToScale(data.x), y: 0})
         }
     }
-    function onDrag(e: DraggableEvent, data: DraggableData): void{
-        console.log(e)
-        console.log(data)
-        console.log(rndRef.current)
-    }
+
 
 
     return <div className={"TaskBounds"}>
@@ -77,16 +72,14 @@ export const TaskView: FunctionComponent<TaskProps> = (props) => {
              enableResizing={{left: true, right: true}}
              default={getDefault()}
              onResize={updateArrow}
-             onDrag={(e , data): void => {
+             onDrag={(): void => {
                  updateArrow();
-                 onDrag(e, data)
              }}
-             onDragStop={(e , data): void => {
+             onDragStop={(e, data): void => {
                  updateArrow();
                  onDragStop(e, data)
              }}
              onResizeStop={updateArrow}
-
              ref={rndRef}
 
         >

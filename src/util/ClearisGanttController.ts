@@ -1,6 +1,6 @@
 import {ScaleMode} from "./ScaleMode";
 import {DayScale, MonthScale, WeekScale, YearScale} from "./TimeScalesHelpers";
-import {Timeline} from "./Timeline";
+import {iTimeline, Timeline} from "./ITimeline";
 import {iTaskController, mockTaskController} from "./TaskController";
 import {ChartContent} from "../components/body/ChartContent";
 import React from "react";
@@ -12,7 +12,7 @@ export interface iClearisGanttController {
 
     setChartTitle(value: string): void;
 
-    timeLine(): Timeline;
+    timeLine(): iTimeline;
 
     changeScale(newScale: ScaleMode): void;
 
@@ -27,7 +27,7 @@ export interface iClearisGanttController {
 
 export class ClearisGanttController implements iClearisGanttController {
     private _chartTitle: string;
-    private _timeLine: Timeline;
+    private _timeLine: iTimeline;
     private _taskController: iTaskController;
 
     private _chartContent: React.RefObject<ChartContent> = React.createRef<ChartContent>();
@@ -58,7 +58,7 @@ export class ClearisGanttController implements iClearisGanttController {
         this._chartTitle = value;
     }
 
-    timeLine(): Timeline {
+    timeLine(): iTimeline {
         return this._timeLine;
     }
 

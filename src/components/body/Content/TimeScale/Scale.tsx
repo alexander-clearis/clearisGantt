@@ -14,21 +14,23 @@ export class Scale extends Component<IntervalHeaderProps> {
     super({
       width: props.width,
       scaleMode: props.scaleMode,
-      date: props.scaleMode.parent.floorDate(props.date)
+      date: props.scaleMode.parent().floorDate(props.date)
     }, context);
   }
 
 
   private calcEndInterval(): Date {
-    return new Date(this.props.scaleMode.parent.ceilDate(this.props.scaleMode.parent.dateByIndex(this.props.date, this.props.scaleMode.parent_in_view - 1)));
+    return new Date(this.props.scaleMode.parent().ceilDate(this.props.scaleMode.parent().dateByIndex(this.props.date, this.props.scaleMode.parent_in_view() - 1)));
   }
 
   private calcChildInInteval(): number {
     const iStart: Date = new Date(this.props.date);
     const iEnd: Date = this.calcEndInterval();
     let counter: number = 0;
-    if (this.props.scaleMode.child) {
-      while (this.props.scaleMode.child.dateByIndex(iStart, counter).valueOf() < iEnd.valueOf()) {
+
+    const hasChild = this.props.scaleMode.child();
+    if (hasChild) {
+      while (hasChild.dateByIndex(iStart, counter).valueOf() < iEnd.valueOf()) {
         counter++;
       }
     }
@@ -36,13 +38,13 @@ export class Scale extends Component<IntervalHeaderProps> {
   }
 
   render() {
-    const rowHeight = this.props.scaleMode.child ? 50 : 100;
+    const rowHeight = this.props.scaleMode.child() ? 50 : 100;
 
     return <div className={"Interval"} style={{width: this.props.width}}>
       <div className={"IntervalRow Parent"} style={{ height: rowHeight + "%" }}>
         {this.renderParentRow()}
       </div>
-      {this.props.scaleMode.child ?
+      {this.props.scaleMode.child() ?
         <div className={"IntervalRow Child"} style={{ height: rowHeight + "%" }}>
           {this.renderChildRow()}
         </div> : null}
@@ -51,7 +53,7 @@ export class Scale extends Component<IntervalHeaderProps> {
 
   private renderChildRow(): ReactNode[] {
     const nodes: ReactNode[] = [];
-    const scale = this.props.scaleMode.child;
+    const scale = this.props.scaleMode.child();
     if (scale) {
       const classes: string = classNames({
         "IntervalCell": true, "Child": true
@@ -76,14 +78,14 @@ export class Scale extends Component<IntervalHeaderProps> {
     const classes: string = classNames({
       "IntervalCell": true, "Parent": true
     });
-    const render_x_times = this.props.scaleMode.parent_in_view;
+    const render_x_times = this.props.scaleMode.parent_in_view();
     const width = this.props.width / render_x_times;
 
     console.log("width = ", width)
     for (let i = 0; i < render_x_times; i++) {
       nodes.push(
         <div className={classes} style={{ width: width + "px" }}>
-          {this.props.scaleMode.parent.dateToIntervalLabel(this.props.scaleMode.parent.dateByIndex(this.props.date, i))}
+          {this.props.scaleMode.parent().dateToIntervalLabel(this.props.scaleMode.parent().dateByIndex(this.props.date, i))}
         </div>
       );
     }

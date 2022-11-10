@@ -1,8 +1,8 @@
 import {Component, createElement} from "react";
-import {Timeline} from "../../../../util/Timeline";
+import {iTimeline} from "../../../../util/ITimeline";
 
 export interface DateMarkerProps {
-    timeLine: Timeline
+    timeLine: iTimeline
     colour: string;
     date: Date;
 }
@@ -10,8 +10,9 @@ export interface DateMarkerProps {
 export class DateMarker extends Component<DateMarkerProps> {
 
     calcPositionLeft(): number {
-        console.log(this.props.timeLine.abosolutePosition(this.props.date), this.props.date)
-        return this.props.timeLine.abosolutePosition(this.props.date);
+        return 0;
+        // console.log(this.props.timeLine.abosolutePosition(this.props.date), this.props.date)
+        // return this.props.timeLine.abosolutePosition(this.props.date);
     }
 
     render() {

@@ -17,8 +17,3 @@
     align-items: center;
     justify-content: center;
 }
-
-.IntervalCell:first-child {
-    box-shadow: none;
-}
-
