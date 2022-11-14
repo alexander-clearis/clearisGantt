@@ -23,7 +23,7 @@ type posAndWidthState = {
 export const TaskView: FunctionComponent<TaskProps> = (props) => {
     const updateArrow = useXarrow();
     const elemID = "Task-A-" + props.defaultState.task.getID();
-    const getOriginalX = props.timeline.relativePosistion(props.defaultState.task.getStart());
+    const getOriginalX = props.timeline.relativePosition(props.defaultState.task.getStart());
     const getOriginalWidth = props.timeline.lengthOnTimeLine(props.defaultState.task.getStart(), props.defaultState.task.getEnd());
     const rndRef = React.useRef<Rnd>(null);
 
@@ -57,9 +57,9 @@ export const TaskView: FunctionComponent<TaskProps> = (props) => {
         snapOnDrag(data);
     }
 
-    const snapOnDrag = (data: DraggableData): void => {
+    const snapOnDrag = (_data: DraggableData): void => {
         if (rndRef) {
-            rndRef.current?.updatePosition({x: props.timeline.snapToScale(data.x), y: 0})
+
         }
     }
 

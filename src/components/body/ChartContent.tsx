@@ -3,7 +3,7 @@ import {propsGCService} from "../../util/propsGCService";
 import {TimeScaleHeader} from "./Content/TimeScale/TimeScaleHeader";
 import {iTimeline} from "../../util/ITimeline";
 import {TaskScaleCanvas} from "./Content/TaskScaleCanvas";
-import {FriendlyTimeline} from "../../util/FriendlyTimeline";
+import {TaskLayer} from "./Content/TimeScale/TaskLayer";
 // import {TaskLayer} from "./Content/TimeScale/TaskLayer";
 
 export interface ChartContentProps extends propsGCService {
@@ -30,15 +30,13 @@ export class ChartContent extends Component<ChartContentProps, ChartContentState
     render() {
 
 
-        const timeline = this.state.timeLine;
-        const friendlyTimeline = new FriendlyTimeline(timeline.scaleMode(), timeline.singleScaleLength(), timeline.startDate(), timeline.endDate())
         return <div className={"ChartContent"}>
-            <TimeScaleHeader timeLine={friendlyTimeline}/>
+            <TimeScaleHeader timeLine={this.state.timeLine}/>
 
             <div className={"CanvasContainer"}>
-                <div className={"Canvas"} style={{width: this.state.timeLine.timelinePixelLength()}}>
-                    <TaskScaleCanvas timeline={this.state.timeLine}> </TaskScaleCanvas>
-                    {/* <TaskLayer zIndex={2} GC_Service={this.props.GC_Service}/> */}
+                <div className={"Canvas"} style={{width: this.props.GC_Service.timeLine().timelinePixelLength()}}>
+                    <TaskScaleCanvas timeline={this.props.GC_Service.timeLine()}> </TaskScaleCanvas>
+                    <TaskLayer zIndex={2} GC_Service={this.props.GC_Service}/>
                 </div>
             </div>
         </div>;

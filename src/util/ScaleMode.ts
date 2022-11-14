@@ -32,6 +32,7 @@ export class ScaleMode {
   label(): string {
     return this._label;
   }
+
 }
 
 export class SingleScaleMode {

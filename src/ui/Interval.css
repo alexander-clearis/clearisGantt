@@ -9,6 +9,7 @@
 
 .IntervalRow {
     display: flex;
+    position: relative;
 }
 
 .IntervalCell {
@@ -16,4 +17,6 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    position: absolute;
+    height: 100%;
 }

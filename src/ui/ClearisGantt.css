@@ -25,6 +25,7 @@ Place your custom CSS here
     padding: 0 !important;
     overflow-y: hidden;
     overflow-x: auto;
+    width: 100%;
 }
 
 .BodyHeader {

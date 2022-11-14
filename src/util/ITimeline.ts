@@ -1,136 +1,17 @@
 import {ScaleMode} from "./ScaleMode";
-import {ScaleType} from "./ScaleType";
+import {TimeInterval} from "./FriendlyTimeline";
 
 export interface iTimeline {
-    timelineLengthInMs(): number;
-    relativePosistion(date:Date): number;
-    calculateDateByPosition(newPos: number): Date
+
+    timelinePixelLength(): number;
     lengthOnTimeLine(startDate: Date, endDate: Date): number;
-    calculateScaleTypeApperanceOnThis(scaleType: ScaleType): number;
     //getParentIntervalOnTimeline(): number;
-    timelinePixelLength(): number
-    nearestSnapToDate(date: Date): Date;
-    snapToScale(pos: number): number;
+    relativePosition(date: Date): number;
+    snapToScale(pos: number): TimeInterval;
     scaleMode(): ScaleMode
     startDate(): Date;
     endDate(): Date;
-    singleScaleLength(): number;
+    contentScaleMap(): Map<number, TimeInterval>
+    scaleParentMap(): Map<number, TimeInterval>;
+    scaleChildMap(): Map<number, TimeInterval>
 }
-
-
-
-export class Timeline implements iTimeline {
-
-    private _scaleMode: ScaleMode;
-    private _startDate: Date;
-    private _endDate: Date;
-    private _singleScaleLength: number;
-
-    // private _scaleMap: Map<number, ScaleInteral>
-
-    constructor(scaleMode: ScaleMode, SingleScaleLength: number, startDate: Date, endDate: Date) {
-        this._scaleMode = scaleMode;
-        this._singleScaleLength = SingleScaleLength;
-        this._startDate = scaleMode.parent().floorDate(startDate);
-        this._endDate = scaleMode.parent().ceilDate(endDate);
-    }
-
-    public timelineLengthInMs(): number {
-        return this._endDate.valueOf() - this._startDate.valueOf();
-    }
-
-    public abosolutePosition(date: Date): number {
-        return ((date.valueOf() - this._startDate.valueOf()) / this.timelineLengthInMs()) * this.timelinePixelLength();
-    }
-
-    public relativePosistion(date: Date): number {
-        const cDate = new Date(date);
-        const relativeScale = this._scaleMode.relativeScaleType();
-        const iStart = relativeScale.floorDate(cDate);
-
-        const iEnd = relativeScale.ceilDate(cDate);
-
-        const deltaTime = iEnd.getTime() - iStart.getTime();
-        const fOnTime = (cDate.getTime() - iStart.getTime()) / deltaTime
-        const iInbetween = relativeScale.intervalsInBetween(this._startDate, cDate);
-
-        const relativeScaleLength = this.timelinePixelLength() / this.calculateScaleTypeApperanceOnThis(relativeScale);
-
-        const r = (relativeScaleLength * iInbetween) + (relativeScaleLength * fOnTime);
-        return r;
-    }
-
-
-    public calculateDateByPosition(newPos: number): Date {
-        const relativeScale = this._scaleMode.relativeScaleType();
-        const relativeScaleLength = this.timelinePixelLength() / this.calculateScaleTypeApperanceOnThis(relativeScale);
-        const inInterval = Math.floor(newPos / relativeScaleLength);
-
-        const intervalStartDate = this._scaleMode.relativeScaleType().dateByIndex(this._startDate, inInterval);
-        const intervalEnd = this._scaleMode.relativeScaleType().ceilDate(intervalStartDate);
-        const intervalLengthTime = intervalEnd.valueOf() - intervalStartDate.valueOf();
-        const absolutePosOnInterval = newPos % relativeScaleLength;
-        const correctionTime = ((intervalLengthTime * absolutePosOnInterval) / relativeScaleLength);
-
-        return new Date(intervalStartDate.valueOf() + correctionTime);
-    }
-
-
-    public lengthOnTimeLine(startDate: Date, endDate: Date): number {
-        return ((endDate.valueOf() - startDate.valueOf()) / this.timelineLengthInMs()) * this.timelinePixelLength();
-    }
-
-    calculateScaleTypeApperanceOnThis(scaleType: ScaleType) {
-        let counter: number = 0;
-        while (scaleType.dateByIndex(this._startDate, counter).valueOf() < this._endDate.valueOf()) {
-            counter++;
-        }
-        return counter;
-    }
-
-    public getParentIntervalOnTimeline(): number {
-        let counter: number = 0;
-        while (this._scaleMode.parent().dateByIndex(this._startDate, counter).valueOf() < this._endDate.valueOf()) {
-            counter++;
-        }
-        return counter;
-    }
-
-    public timelinePixelLength(): number {
-        return (this.getParentIntervalOnTimeline() / this._scaleMode.parent_in_view()) * this.singleScaleLength();
-    }
-
-    public nearestSnapToDate(date: Date): Date {
-        const iStart = this.scaleMode().relativeScaleType().floorDate(date);
-        const iEnd = this.scaleMode().relativeScaleType().ceilDate(date);
-
-        return ((date.valueOf() - iStart.valueOf()) <= iEnd.valueOf()) ? iStart : iEnd
-    }
-
-    public snapToScale(pos: number): number {
-        const relativeScale = this._scaleMode.relativeScaleType();
-        const relativeScaleLength = this.timelinePixelLength() / this.calculateScaleTypeApperanceOnThis(relativeScale);
-        const posInInt = pos % relativeScaleLength;
-
-        return (posInInt <= relativeScaleLength) ? pos - posInInt : pos - posInInt + relativeScaleLength
-    }
-
-    scaleMode(): ScaleMode {
-        return this._scaleMode;
-    }
-
-    startDate(): Date {
-        return this._startDate;
-    }
-
-
-    endDate(): Date {
-        return this._endDate;
-    }
-
-    singleScaleLength(): number {
-        return this._singleScaleLength;
-    }
-
-}
-

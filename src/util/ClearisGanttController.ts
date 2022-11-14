@@ -1,9 +1,10 @@
 import {ScaleMode} from "./ScaleMode";
 import {DayScale, MonthScale, WeekScale, YearScale} from "./TimeScalesHelpers";
-import {iTimeline, Timeline} from "./ITimeline";
+import {iTimeline} from "./ITimeline";
 import {iTaskController, mockTaskController} from "./TaskController";
 import {ChartContent} from "../components/body/ChartContent";
 import React from "react";
+import {FriendlyTimeline} from "./FriendlyTimeline";
 
 export interface iClearisGanttController {
     readonly scaleModeControllers: ScaleMode[];
@@ -42,7 +43,8 @@ export class ClearisGanttController implements iClearisGanttController {
 
     constructor(name: string, singelIntervalLength: number) {
         this._chartTitle = name;
-        this._timeLine = new Timeline(this.scaleModeControllers[1], singelIntervalLength, new Date(2019, 0, 1, 3, 0), new Date(2022, 0, 1, 3, 0));
+
+        this._timeLine = new FriendlyTimeline(this.scaleModeControllers[1], singelIntervalLength, new Date(2019, 0, 1, 3, 0), new Date(2022, 0, 1, 3, 0));
         this._taskController = new mockTaskController();
 
 
@@ -63,7 +65,7 @@ export class ClearisGanttController implements iClearisGanttController {
     }
 
     public changeScale(newScale: ScaleMode): void {
-        this._timeLine = new Timeline(newScale, this.viewLength(), this._timeLine.startDate(), this._timeLine.endDate());
+        this._timeLine = new FriendlyTimeline(newScale, this.viewLength(), this._timeLine.startDate(), this._timeLine.endDate());
         this._chartContent.current?.newTimeLine(this._timeLine);
     }
 
