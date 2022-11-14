@@ -138,8 +138,13 @@ export class FriendlyTimeline implements iTimeline {
     };
 
 
-    snapToScale(pos: number): TimeInterval {
-        return this.inInterval(pos)
+    findNearestSnap(point: number): SnapPoint {
+        return this.snapPoints.get(this.closestKeyToPoint(point))![0]!;
+    }
+    closestKeyToPoint(point: number): number {
+        return Array.from(this.snapPoints.keys()).reduce(function(prev, curr): number {
+            return (Math.abs(curr - point) < Math.abs(prev - point) ? curr : prev);
+        });
     }
 
     inInterval(pos: number): TimeInterval {
@@ -192,9 +197,9 @@ export enum SnapType {
 }
 
 export class SnapPoint {
-    SnapType: SnapType;
-    position: positionOnTimeLine;
-    taskID?: string;
+    public readonly SnapType: SnapType;
+    public position: positionOnTimeLine;
+    public readonly taskID?: string;
 
 
     constructor(SnapType: SnapType, position: positionOnTimeLine, taskID?: string) {

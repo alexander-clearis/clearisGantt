@@ -14,8 +14,11 @@ export interface iTask {
     addChildren(...children: iTask[]): void;
 
     setParent(parent: iTask): void;
+
     getParent(): iTask | undefined;
+
     removeParent(): void;
+
     // something for the view!!
     // display(value: boolean): void;
     //

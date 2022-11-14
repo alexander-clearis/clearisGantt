@@ -56,13 +56,35 @@ export const TaskView: FunctionComponent<TaskProps> = (props) => {
     const onDragStop = (_e: DraggableEvent, data: DraggableData): void => {
         snapOnDrag(data);
     }
+    const snapOnDrag = (data: DraggableData): void => {
+        if(data.deltaX > 0) {
+            const closestToStart = props.timeline.findNearestSnap(data.x);
+            const closestToEnd = props.timeline.findNearestSnap(data.x + posAndWidth.width);
+            let deltaStart = closestToStart.position.position - data.x;
+            if (deltaStart < 0) {
+                deltaStart = deltaStart * -1;
+            }
+            let deltaEnd = closestToEnd.position.position - (data.x + posAndWidth.width);
+            if (deltaEnd < 0) {
+                deltaEnd = deltaEnd * -1;
+            }
 
-    const snapOnDrag = (_data: DraggableData): void => {
-        if (rndRef) {
-
+            if (deltaStart < deltaEnd) {
+                changePosRnd(closestToStart.snapOn().position);
+            } else {
+                const snapTo = closestToEnd.snapBefore()
+                changePosRnd(snapTo.position - posAndWidth.width)
+            }
         }
+        return
     }
 
+
+    const changePosRnd = (pos: number): void => {
+        if (rndRef) {
+            rndRef.current?.updatePosition({x: pos, y: 0})
+        }
+    }
 
 
     return <div className={"TaskBounds"}>

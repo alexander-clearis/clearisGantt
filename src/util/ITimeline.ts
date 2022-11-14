@@ -1,5 +1,5 @@
 import {ScaleMode} from "./ScaleMode";
-import {TimeInterval} from "./FriendlyTimeline";
+import {SnapPoint, TimeInterval} from "./FriendlyTimeline";
 
 export interface iTimeline {
 
@@ -7,7 +7,7 @@ export interface iTimeline {
     lengthOnTimeLine(startDate: Date, endDate: Date): number;
     //getParentIntervalOnTimeline(): number;
     relativePosition(date: Date): number;
-    snapToScale(pos: number): TimeInterval;
+    findNearestSnap(pos: number): SnapPoint;
     scaleMode(): ScaleMode
     startDate(): Date;
     endDate(): Date;
