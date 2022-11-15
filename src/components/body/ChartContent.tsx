@@ -4,6 +4,7 @@ import {TimeScaleHeader} from "./Content/TimeScale/TimeScaleHeader";
 import {iTimeline} from "../../util/ITimeline";
 import {TaskScaleCanvas} from "./Content/TaskScaleCanvas";
 import {TaskLayer} from "./Content/TimeScale/TaskLayer";
+import {TimeMarker} from "./Content/TimeScale/TimeMarker";
 // import {TaskLayer} from "./Content/TimeScale/TaskLayer";
 
 export interface ChartContentProps extends propsGCService {
@@ -21,10 +22,16 @@ export class ChartContent extends Component<ChartContentProps, ChartContentState
         this.state = {timeLine: this.props.GC_Service.timeLine()};
     }
 
+
+
     newTimeLine(timeline: iTimeline){
         console.log("New Timeline!")
         this.setState({timeLine: timeline});
     }
+
+    private SnapHelper = new TimeMarker({positionOnTimeLine: 0,  display: true, className: "SnapHelper"});
+
+
 
 
     render() {
@@ -36,7 +43,8 @@ export class ChartContent extends Component<ChartContentProps, ChartContentState
             <div className={"CanvasContainer"}>
                 <div className={"Canvas"} style={{width: this.props.GC_Service.timeLine().timelinePixelLength()}}>
                     <TaskScaleCanvas timeline={this.props.GC_Service.timeLine()}> </TaskScaleCanvas>
-                    <TaskLayer zIndex={2} GC_Service={this.props.GC_Service}/>
+                    {this.SnapHelper.render()}
+                    <TaskLayer zIndex={2} GC_Service={this.props.GC_Service} SnapHelper={this.SnapHelper}/>
                 </div>
             </div>
         </div>;

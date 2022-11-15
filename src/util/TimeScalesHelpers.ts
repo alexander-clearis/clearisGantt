@@ -17,7 +17,7 @@ export class DayScale extends ScaleType {
 
     ceilDate(date: Date): Date {
         const r: Date = new Date(date);
-        r.setHours(23, 59, 9, 0);
+        r.setHours(23, 59, 59, 0);
         return r;
     }
 

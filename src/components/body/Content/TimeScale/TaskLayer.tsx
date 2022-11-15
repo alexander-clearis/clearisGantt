@@ -5,9 +5,12 @@ import {Xwrapper} from "react-xarrows";
 import {iTask} from "../../../../util/TaskModel";
 import {TaskConnectorParentcChild} from "../Tasks/TaskConnectorParentcChild";
 import {TaskConnectionBase} from "../../../../util/TaskConnectionBase";
+import {TimeMarker} from "./TimeMarker";
+import {SnapPoint, SnapType} from "../../../../util/FriendlyTimeline";
 
 export interface TaskLayerProps extends propsGCService {
     zIndex: number;
+    SnapHelper: TimeMarker;
 }
 
 export interface renderTreeState {
@@ -22,6 +25,17 @@ export type renderTaskState = {
 }
 
 export const TaskLayer: FunctionComponent<TaskLayerProps> = (props) => {
+
+
+    const renderSnapHelper = (): void => {
+        props.SnapHelper.display(true);
+    }
+    const updateSnapHelper = (snappoint: SnapPoint): void => {
+        props.SnapHelper.changePos(snappoint.snapOn().position);
+    }
+    const removeSnapHelper = (): void => {
+        // props.SnapHelper.display(false);
+    }
 
     function generateRenderTaskState(task: iTask, display: boolean): renderTaskState {
         return {
@@ -75,7 +89,7 @@ export const TaskLayer: FunctionComponent<TaskLayerProps> = (props) => {
 
     function renderParentChildConnections(parent: renderTaskState): ReactNode [] {
         const r: ReactNode[] = [];
-        if(parent.display && parent.displayChildren) {
+        if (parent.display && parent.displayChildren) {
             parent.children?.forEach(item => {
                 r.push(<TaskConnectorParentcChild taskConnection={new TaskConnectionBase(parent.task, item.task)}/>);
             })
@@ -85,7 +99,12 @@ export const TaskLayer: FunctionComponent<TaskLayerProps> = (props) => {
 
     function renderTaskTreeMember(task: renderTaskState): ReactNode {
         const self = <TaskView defaultState={task} taskController={props.GC_Service.taskController()}
-                               timeline={props.GC_Service.timeLine()} onToggleChildren={toggleChildren}/>;
+                               timeline={props.GC_Service.timeLine()} onToggleChildren={toggleChildren}
+                               showSnapHelper={renderSnapHelper}
+                               updateSnapHelper={updateSnapHelper}
+                               hideSnapHelper={removeSnapHelper}
+
+        />;
         const children = renderTaskTreeMemberChildren(task);
         const TaskConnections: ReactNode = renderParentChildConnections(task)
         if (children.length > 0) {
@@ -113,10 +132,13 @@ export const TaskLayer: FunctionComponent<TaskLayerProps> = (props) => {
         return r
     }
 
+
     return <div className={"TaskLayer CanvasLayer"} style={{zIndex: props.zIndex}}>
         <Xwrapper>
             {renderTasks()}
             {/* {this.renderConnections()} */}
+
+            <button onClick={() => {updateSnapHelper(new SnapPoint(SnapType.Interval, {position: props.GC_Service.timeLine().relativePosition(new Date()), date: new Date()}))}}> test </button>
         </Xwrapper>
     </div>;
 }
