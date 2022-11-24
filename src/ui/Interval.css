@@ -24,5 +24,5 @@
 .SnapHelper {
     height: 100%;
     position: absolute;
-    border-left: 5px orange dashed;
+    border-left: 3px orange dashed;
 }

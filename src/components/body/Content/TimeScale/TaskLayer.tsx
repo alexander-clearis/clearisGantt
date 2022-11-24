@@ -1,4 +1,4 @@
-import {createElement, Fragment, FunctionComponent, ReactNode, useReducer, useState} from "react";
+import {createElement, Fragment, FunctionComponent, ReactNode, RefObject, useReducer, useState} from "react";
 import {propsGCService} from "../../../../util/propsGCService";
 import {TaskView} from "../Tasks/TaskView";
 import {Xwrapper} from "react-xarrows";
@@ -6,11 +6,11 @@ import {iTask} from "../../../../util/TaskModel";
 import {TaskConnectorParentcChild} from "../Tasks/TaskConnectorParentcChild";
 import {TaskConnectionBase} from "../../../../util/TaskConnectionBase";
 import {TimeMarker} from "./TimeMarker";
-import {SnapPoint, SnapType} from "../../../../util/FriendlyTimeline";
+import {SnapPoint} from "../../../../util/FriendlyTimeline";
 
 export interface TaskLayerProps extends propsGCService {
     zIndex: number;
-    SnapHelper: TimeMarker;
+    SnapHelperRef: RefObject<TimeMarker>;
 }
 
 export interface renderTreeState {
@@ -28,13 +28,13 @@ export const TaskLayer: FunctionComponent<TaskLayerProps> = (props) => {
 
 
     const renderSnapHelper = (): void => {
-        props.SnapHelper.display(true);
+        props.SnapHelperRef.current?.display(true);
     }
     const updateSnapHelper = (snappoint: SnapPoint): void => {
-        props.SnapHelper.changePos(snappoint.snapOn().position);
+        props.SnapHelperRef.current?.changePos(snappoint.snapOn().position);
     }
     const removeSnapHelper = (): void => {
-        // props.SnapHelper.display(false);
+        props.SnapHelperRef.current?.display(false);
     }
 
     function generateRenderTaskState(task: iTask, display: boolean): renderTaskState {
@@ -72,7 +72,7 @@ export const TaskLayer: FunctionComponent<TaskLayerProps> = (props) => {
     }
 
     // @ts-ignore
-    const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+    const [_ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
     const [taskLayerState, setTaskLayerState] = useState<renderTreeState>({renderTaskStateTree: initStateTree()})
     const toggleChildren = (): void => {
@@ -137,8 +137,6 @@ export const TaskLayer: FunctionComponent<TaskLayerProps> = (props) => {
         <Xwrapper>
             {renderTasks()}
             {/* {this.renderConnections()} */}
-
-            <button onClick={() => {updateSnapHelper(new SnapPoint(SnapType.Interval, {position: props.GC_Service.timeLine().relativePosition(new Date()), date: new Date()}))}}> test </button>
         </Xwrapper>
     </div>;
 }

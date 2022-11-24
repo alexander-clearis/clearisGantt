@@ -26,6 +26,7 @@ export const TaskView: FunctionComponent<TaskProps> = (props) => {
     const elemID = "Task-A-" + props.defaultState.task.getID();
     const rndRef = React.useRef<Rnd>(null);
 
+
     const getOriginalTimelineInteval = (): TimeInterval => {
         return new TimeInterval(
             props.defaultState.task.getStart(),
@@ -33,6 +34,7 @@ export const TaskView: FunctionComponent<TaskProps> = (props) => {
             props.defaultState.task.getEnd(),
             props.timeline.lengthOnTimeLine(props.defaultState.task.getStart(), props.defaultState.task.getEnd())
         );
+
     }
     const [timelineIntervalState, setTimelineIntervalState] = useState<TimeInterval>(getOriginalTimelineInteval)
     const toggleChildren = (): void => {
@@ -50,6 +52,10 @@ export const TaskView: FunctionComponent<TaskProps> = (props) => {
     }
 
 
+
+
+
+
     const onDragStop = (_e: DraggableEvent, data: DraggableData): void => {
         setTimelineIntervalState(snapOnDrag(data));
     }
@@ -57,60 +63,35 @@ export const TaskView: FunctionComponent<TaskProps> = (props) => {
         setTimelineIntervalState(snapOnResize(_data, _delta))
     }
 
+    const findSnapOnDrag = (data: DraggableData): SnapPoint => {
+        return props.timeline.findNearestSnap(data.x)
+    }
     const snapOnDrag = (data: DraggableData): TimeInterval => {
         //check if pos changed state!
         const currentState = timelineIntervalState;
         console.log(data)
         if (true) {
             const closestToStart = props.timeline.findNearestSnap(data.x);
-            const closestToEnd = props.timeline.findNearestSnap(data.x + currentState.lengthInPixels);
-            let deltaStart = closestToStart.position.position - data.x;
-            if (deltaStart < 0) {
-                deltaStart = deltaStart * -1;
-            }
-            let deltaEnd = closestToEnd.position.position - (data.x + currentState.lengthInPixels);
-            if (deltaEnd < 0) {
-                deltaEnd = deltaEnd * -1;
-            }
 
-            // if (deltaStart < deltaEnd) {
             const snapPoint = closestToStart.snapOn();
             const newEndTime = new Date(snapPoint.date.valueOf() + currentState.lengthInMs);
             const newTI = new TimeInterval(snapPoint.date, snapPoint.position, newEndTime, currentState.lengthInPixels)
             return newTI;
-            // } else {
-            //     const snapTo = closestToEnd.snapBefore()
-            //     const newStartTime = new Date(snapTo.date.valueOf() - currentState.lengthInMs);
-            //     const newTI = new TimeInterval(newStartTime, snapTo.position - currentState.lengthInPixels, snapTo.date, currentState.lengthInPixels)
-            //     return newTI;
-            // }
-
         }
         return currentState;
     }
     const snapOnResize = (data: ResizeDirection, delta: ResizableDelta): TimeInterval => {
         const currentState = timelineIntervalState;
-        console.log(data, delta)
         if (delta.width !== 0) {
             if (data === "left") {
-                const closestToLeft = props.timeline.findNearestSnap((currentState.start.position - delta.width));
-                const snapTo = closestToLeft.snapOn();
-                if (snapTo.date.valueOf() >= currentState.end.date.valueOf()) {
-                    return currentState;
-                } // eigenlijk niet, moet naar begin van interval
+                const snapTo = findSnapOnResize(data, delta).snapOn();
                 const newTI = new TimeInterval(snapTo.date, snapTo.position, currentState.end.date, currentState.end.position - snapTo.position);
                 return newTI;
             } else {
-                const closestToRight = props.timeline.findNearestSnap((currentState.end.position + delta.width));
-                const snapTo = closestToRight.snapBefore();
-                if (snapTo.date <= currentState.start.date) {
-                    return currentState;
-                } // eigenlijk niet, moet naar eind van interval.
+                const snapTo = findSnapOnResize(data, delta).snapBefore();
                 const newTI = new TimeInterval(currentState.start.date, currentState.start.position, snapTo.date, snapTo.position - currentState.start.position);
                 return newTI;
             }
-            //left is start.
-            //right is end.
         }
         return currentState;
     }
@@ -119,18 +100,21 @@ export const TaskView: FunctionComponent<TaskProps> = (props) => {
         if (data === "left") {
 
             const closestToLeft = props.timeline.findNearestSnap((currentState.start.position - delta.width));
-            // const snapTo = closestToLeft.snapOn();
-            // if (snapTo.date.valueOf() >= currentState.end.date.valueOf()) {
-            //     return undefined;
-            // }
-            // eigenlijk niet, moet naar begin van interval
+
+            if (currentState.end.date.valueOf() <= closestToLeft.snapOn().date.valueOf()) {
+                return props.timeline.findNearestSnap(props.timeline.relativePosition(props.timeline.scaleMode().relativeScaleType().dateByIndex(closestToLeft.snapOn().date, -1)
+                ))
+
+            }
+
             return closestToLeft;
         } else {
             const closestToRight = props.timeline.findNearestSnap((currentState.end.position + delta.width));
-            // const snapTo = closestToRight.snapBefore();
-            // if (snapTo.date <= currentState.start.date) {
-            //     return undefined;
-            // }
+            if (currentState.start.date.valueOf() >= closestToRight.snapOn().date.valueOf()) {
+                console.log(currentState.start.date)
+                return props.timeline.findNearestSnap(props.timeline.relativePosition(props.timeline.scaleMode().relativeScaleType().dateByIndex(closestToRight.snapOn().date, 1)
+                ))
+            }
             return closestToRight;
         }
         //left is start.
@@ -148,19 +132,19 @@ export const TaskView: FunctionComponent<TaskProps> = (props) => {
              size={{width: timelineIntervalState.lengthInPixels, height: "100%"}}
              position={{x: timelineIntervalState.start.position, y: 0}}
 
-             onResizeStart={props.showSnapHelper}
+             onResizeStart={
+                 (_e, dir): void => {
+                     props.updateSnapHelper(findSnapOnResize(dir, {width: 0, height: 0}))
+                     props.showSnapHelper()
+
+                 }
+
+             }
 
              onResize={(_e, dir, _elementRef, delta): void => {
 
                  props.updateSnapHelper(findSnapOnResize(dir, delta));
                  updateArrow()
-             }}
-             onDrag={(): void => {
-                 updateArrow();
-             }}
-             onDragStop={(e, data): void => {
-                 onDragStop(e, data)
-                 updateArrow();
              }}
              onResizeStop={(_e, data, _elementRef, delta, position) => {
                  onResizeStop(data, delta, position);
@@ -169,6 +153,19 @@ export const TaskView: FunctionComponent<TaskProps> = (props) => {
              }
 
              }
+             onDragStart={(_e, data): void => {
+                 props.updateSnapHelper(findSnapOnDrag(data));
+                 props.showSnapHelper()
+             }}
+             onDrag={(_e, data ): void => {
+                 props.updateSnapHelper(findSnapOnDrag(data));
+                 updateArrow();
+             }}
+             onDragStop={(e, data): void => {
+                 onDragStop(e, data)
+                 props.hideSnapHelper()
+                 updateArrow();
+             }}
              ref={rndRef}
 
         >
@@ -178,36 +175,4 @@ export const TaskView: FunctionComponent<TaskProps> = (props) => {
 
         </Rnd>
     </div>;
-
-
-// const returnChildren = (): ReactNode[] => {
-//     const r: ReactNode[] = [];
-//     const children = props.task.getChildren()
-//     if (renderChildren) {
-//         if (children) {
-//
-//             const sortedChildren = children.sort((t1, t2) => {
-//                 if (t1.getStart().getTime() > t2.getStart().getTime()) {
-//                     return 1
-//                 } else if (t1.getStart().getTime() < t2.getStart().getTime()) {
-//                     return -1
-//                 }
-//                 return 0
-//             })
-//
-//             for (let i = 0; i < sortedChildren.length; i++) {
-//                 r.push(TaskView({
-//                     taskController: props.taskController,
-//                     task: sortedChildren[i],
-//                     timeline: props.timeline
-//                 }))
-//             }
-//         }
-//     }
-//
-//     return r;
-// }
-
-//if display return... else return null
-//return the children of the task.
 }

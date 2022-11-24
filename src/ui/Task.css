@@ -14,7 +14,7 @@
     margin: auto auto;
     height: 63px;
     border-radius: 8px;
-    width: calc(100% - 2px);
+    width: calc(100%);
 
     display: flex;
     align-content: center;

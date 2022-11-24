@@ -12,14 +12,13 @@ export interface TimeMarkerState {
 }
 
 export class TimeMarker extends Component<TimeMarkerProps, TimeMarkerState> {
-
+    state = {
+        positionOnTimeLine: 0,
+        display: false
+    }
 
     constructor(props: TimeMarkerProps) {
         super(props);
-        this.state = {
-            positionOnTimeLine: 0,
-            display: true
-        }
     }
 
     public change(x?: number, display?: boolean): void {
@@ -27,43 +26,45 @@ export class TimeMarker extends Component<TimeMarkerProps, TimeMarkerState> {
     }
 
     public display(display: boolean): void {
-        this.setState({display: display})
+        this.setState(
+            (prevstate) => {
+                return {...prevstate, display: display}
+            })
     }
 
-    private changePosState(prevstate: TimeMarkerState, newPos: number): TimeMarkerState {
-        return {
-            ...prevstate, positionOnTimeLine: newPos
-        }
-    }
 
     public changePos(pos: number): void {
-        console.log("WTF?")
-        console.log("new pos: ", pos, this.changePosState(this.state, 80))
-        this.setState(this.changePosState(this.state, pos))
-        console.log("this is directly after", this.state.positionOnTimeLine)
-    }
+        if (this.state.positionOnTimeLine != pos) {
 
-    componentDidMount() {
-        this.setState(this.changePosState(this.state, 80))
-        console.log()
+            this.setState(
+                {positionOnTimeLine: pos}
+                , () => {
+                })
+        }
 
     }
 
     render() {
-        console.log("renderrrrr")
+
         if (this.state.display) {
             let className = "TimeMarker"
             className += " " + this.props.className;
-            return <div
+            return [<div
                 //ref={this.props.ref}
                 className={className + " "}
                 style={{
-                    left: this.state.positionOnTimeLine - 2 + "px",
+                    left: this.state.positionOnTimeLine -1.5 + "px",
                 }}
             >
-                <button style={{zIndex: 20}} onClick={() => this.changePos(20)}></button>
-            </div>;
+            </div>
+                // <button onClick={() => {
+                //     this.display(this.state.display!);
+                // }}>display</button>
+            ]
         }
         return null
+        // return <button style={{zIndex: 20}} onClick={() => {
+        //     this.display(this.state.display!);
+        // }}>display</button>
     }
 }

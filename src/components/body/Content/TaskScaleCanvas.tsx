@@ -15,10 +15,7 @@ export class TaskScaleCanvas extends Component<iTaskScaleProps> {
         const intervals: ReactNode[] = [];
 
         this.props.timeline.contentScaleMap().forEach(value => {
-            console.log(value.start.position, value.start.date)
-            intervals.push(<ScaleMarker positionOnTimeLine={value.start.position}
-
-                                        />)
+            intervals.push(<ScaleMarker positionOnTimeLine={value.start.position}/>)
         })
 
         return intervals

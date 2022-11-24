@@ -67,7 +67,7 @@ export class FriendlyTimeline implements iTimeline {
 
 
     public calcAmountOfDays(startDate: Date, endDate: Date): number {
-        var diff = Math.abs(startDate.getTime() - endDate.getTime());
+        var diff = Math.abs(startDate.valueOf() - endDate.valueOf());
         return Math.ceil(diff / (1000 * 3600 * 24));
     }
 
@@ -124,16 +124,16 @@ export class FriendlyTimeline implements iTimeline {
     };
 
     public relativePosition(date: Date): number {
-        const inInterval = this._contentScale.get(this._scaleMode.relativeScaleType().floorDate(date).valueOf());
-        if (inInterval) {
-            if (date.valueOf() === inInterval.start.date.valueOf()) {
-                return inInterval.start.position;
-            } else {
-                return inInterval.calculatePosistionInInterval(date);
-            }
-        } else {
-            throw new Error("no interval found for date: " + date,)
-        }
+        // const inInterval = this._contentScale.get(this._scaleMode.relativeScaleType().floorDate(date).valueOf());
+        // if (inInterval) {
+        //     if (date.valueOf() === inInterval.start.date.valueOf()) {
+        //         return inInterval.start.position;
+        //     } else {
+        //         return inInterval.calculatePosistionInInterval(date);
+        //     }
+        // } else {
+        //     throw new Error("no interval found for date: " + date)
+        // }
         return this.calcAmountOfDays(this._startDate, date) * this.DaysInPixels;
     };
 
