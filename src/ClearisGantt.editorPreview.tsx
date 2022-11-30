@@ -1,12 +1,7 @@
-import { Component, ReactNode, createElement } from "react";
-import { ClearisGanttConainter } from "./components/ClearisGanttConainter";
+import { Component} from "react";
 import { ClearisGanttPreviewProps } from "../typings/ClearisGanttProps";
-import { ClearisGanttController } from "./util/ClearisGanttController";
 
 export class preview extends Component<ClearisGanttPreviewProps> {
-    render(): ReactNode {
-        return <ClearisGanttConainter GC_Service={new ClearisGanttController(this.props.chartTitle, 1500)} />;
-    }
 }
 
 export function getPreviewCss(): string {

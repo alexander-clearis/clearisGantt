@@ -25,12 +25,13 @@ Place your custom CSS here
     padding: 0 !important;
     overflow-y: hidden;
     overflow-x: auto;
+    width: 100%;
 }
 
 .BodyHeader {
     height: 12.5%;
 }
 .TimeScale.BodyHeader {
-    display: flex;
-    flex-wrap: nowrap;
+    display: table;
+    width: auto;
 }

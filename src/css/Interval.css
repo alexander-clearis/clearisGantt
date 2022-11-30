@@ -2,14 +2,14 @@
 .Interval {
     box-shadow: 1px 0 0 0 lightgray;
 }
-.Interval:first-child {
-    box-shadow: none;
-
+.Interval {
+    box-shadow: none
 
 }
 
 .IntervalRow {
     display: flex;
+    position: relative;
 }
 
 .IntervalCell {
@@ -17,9 +17,12 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    position: absolute;
+    height: 100%;
 }
 
-.IntervalCell:first-child {
-    box-shadow: none;
+.SnapHelper {
+    height: 100%;
+    position: absolute;
+    border-left: 3px orange dashed;
 }
-
