@@ -7,14 +7,22 @@ export interface iNodeController {
     getName(): string;
 
     getStart(): Date;
+    getEnd(): Date;
 
+    getParent(): iNodeController | undefined;
 }
 
 export class NodeController<T extends iGanttNode> implements iNodeController {
     protected nodeModel: T;
+    protected parent: iNodeController | undefined
 
-    constructor(nodeModel: T) {
+    constructor(nodeModel: T, parent?: iNodeController) {
         this.nodeModel = nodeModel;
+        this.parent = parent
+    }
+
+    getParent(): iNodeController| undefined {
+        return this.parent;
     }
 
     getName(): string {
@@ -26,6 +34,9 @@ export class NodeController<T extends iGanttNode> implements iNodeController {
     }
 
     getStart(): Date {
+        return this.nodeModel.getStart();
+    }
+    getEnd(): Date {
         return this.nodeModel.getStart();
     }
 

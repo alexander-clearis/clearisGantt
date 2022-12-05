@@ -26,7 +26,6 @@ export class TaskViewWrapper extends Component<TaskViewWrapperProps, TaskViewWra
         }
     }
 
-
     public getStartEnd(): StartEndClearis {
         return {
             start: this.state.nodeSize.x,
@@ -55,6 +54,6 @@ export class TaskViewWrapper extends Component<TaskViewWrapperProps, TaskViewWra
 
 
     render() {
-        return <TaskNode name={this.props.name} anchorID={this.anchorID} nodeSize={this.state.nodeSize} onSizeUpdate={this.onNodeChange}/>
+        return <TaskNode name={this.props.name} anchorID={this.anchorID} nodeSize={this.state.nodeSize} onSizeUpdate={this.onNodeChange} getMaxBounds={this.props.getMaxBounds}/>
     }
 }
