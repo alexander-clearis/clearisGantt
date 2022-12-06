@@ -7,6 +7,10 @@ export interface iGanttNode {
 
     setStart(newStart: Date): void;
 
+    getEnd(): Date;
+
+    setEnd(newEnd: Date): void;
+
     onUpdate(): void;
 }
 

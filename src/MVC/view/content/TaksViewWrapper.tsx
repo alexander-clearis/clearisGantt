@@ -1,9 +1,7 @@
 import {Component, createElement} from "react";
-import {NodeViewSize, StartEndClearis} from "../../util/ExtraTypes";
+import {NodeViewSize, StartEndClearis} from "../../../util/ExtraTypes";
 import {TaskNode} from "./TaskNode";
 import {iNodeViewWrapper, NodeViewWrapperProps, NodeViewWrapperState} from "./__viewNode";
-
-
 
 export interface TaskViewWrapperProps extends NodeViewWrapperProps {
 
@@ -47,7 +45,7 @@ export class TaskViewWrapper extends Component<TaskViewWrapperProps, TaskViewWra
             }
         })
     }
-    public onNodeChange(size: NodeViewSize): void {
+    onNodeChange = (size: NodeViewSize): void => {
         console.log("Taskwrapper: ", this.props.id, " ", this.props.name, " has a new size. ", size);
         //todo snap?
     }

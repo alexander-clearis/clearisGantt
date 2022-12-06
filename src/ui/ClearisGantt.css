@@ -29,7 +29,9 @@ Place your custom CSS here
 }
 
 .BodyHeader {
+
     height: 12.5%;
+    /*height: 50%;*/
 }
 .TimeScale.BodyHeader {
     display: table;

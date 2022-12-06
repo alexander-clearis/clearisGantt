@@ -1,5 +1,6 @@
 import {ScaleMode} from "./scale/ScaleMode";
 import {ScaleType} from "./scale/ScaleType";
+import {scaleProps, timeXvalue} from "../../util/ExtraTypes";
 
 
 export interface iTimelineController {
@@ -10,21 +11,23 @@ export interface iTimelineController {
     dateToNumber(startDate: Date, endDate?: Date): number;
 
     numberToDate(number: number): Date;
+
+    calculateAmountOfDays(startDate: Date, endDate: Date): number
+
+    getScaleMode(): ScaleMode
+
+    getRelativeScaleMap(): scaleProps[]
+
+    getParentScaleMap(): scaleProps[]
+
+    getChildScaleMap(): scaleProps[] | undefined
+
 }
 
-
-export type timeXvalue = {
-    date: Date,
-    x: number,
-}
-export type scaleProps = {
-    start: timeXvalue;
-    end: timeXvalue;
-}
 
 export class TimelineController implements iTimelineController {
     private scaleMode: ScaleMode;
-    private amountOfDays: number
+    private amountOfDaysInView: number
     private dayPixeLength: number;
     private scaleProps: Map<string, scaleProps[]> = new Map<string, scaleProps[]>()
     private CommontimeXValues: timeXvalue[] = []
@@ -38,8 +41,10 @@ export class TimelineController implements iTimelineController {
 
         this.startDate = this.scaleMode.parent().floorDate(startDate)
         this.endDate = this.scaleMode.parent().ceilDate(endDate)
-        this.amountOfDays = this.calculateAmountOfDays(startDate, endDate)
-        this.dayPixeLength = Math.floor(this.amountOfDays / viewLength)
+        this.amountOfDaysInView = this.calculateAmountOfDays(startDate, scaleMode.parent().dateByIndex(startDate, scaleMode.parent_in_view()))
+        console.log(scaleMode.parent().dateByIndex(startDate, scaleMode.parent_in_view()));
+        console.log(this.amountOfDaysInView)
+        this.dayPixeLength = Math.floor(viewLength / this.amountOfDaysInView)
         this.scaleProps.set(scaleMode.parent().getID(), this.generateScaleProps(scaleMode.parent()))
         if (scaleMode.child()) {
             this.scaleProps.set(scaleMode.child()!.getID(), this.generateScaleProps(scaleMode.child()!))
@@ -47,28 +52,28 @@ export class TimelineController implements iTimelineController {
         this.CommontimeXValues.sort((a, b) => a.x < b.x ? -1 : a.x > b.x ? 1 : 0)
     }
 
-    calculateAmountOfDays(startDate: Date, endDate: Date): number {
+    public calculateAmountOfDays(startDate: Date, endDate: Date): number {
         var diff = Math.abs(startDate.valueOf() - endDate.valueOf());
-        return Math.ceil(diff / (1000 * 3600 * 24));
+        return Math.round(diff / (1000 * 3600 * 24));
     }
 
 
-    numberToDate(number: number): Date {
+    public numberToDate(number: number): Date {
         const amountOfDays = number / this.dayPixeLength
         return new Date(this.startDate.valueOf() + (amountOfDays * (1000 * 3600 * 24)));
     }
 
-    dateToNumber(startDate: Date, endDate?: Date): number {
-        if (endDate) {
-            const delta = endDate.valueOf() - startDate.valueOf();
+    public dateToNumber(data1: Date, date2?: Date): number {
+        if (date2) {
+            const delta = this.calculateAmountOfDays(data1, date2);
             return delta * this.dayPixeLength
         } else {
-            const delta = this.startDate.valueOf() - startDate.valueOf();
+            const delta = this.calculateAmountOfDays(this.startDate, data1);
             return delta * this.dayPixeLength;
         }
     }
 
-    generateScaleProps(scaleType: ScaleType): scaleProps[] {
+    private generateScaleProps(scaleType: ScaleType): scaleProps[] {
         const scalePropsArray: scaleProps[] = []
 
         let i = 0;
@@ -81,12 +86,13 @@ export class TimelineController implements iTimelineController {
             const intervalLength = this.dateToNumber(intervalStartDate, intervalEndDate)
             const scaleProps: scaleProps = {
                 start: this.newTimeXValue(intervalStartDate, elapsedPixels, checkCommonValues),
-                end: this.newTimeXValue(intervalStartDate, elapsedPixels + elapsedPixels, checkCommonValues)
+                end: this.newTimeXValue(intervalEndDate, elapsedPixels + intervalLength, checkCommonValues)
             };
 
             scalePropsArray.push(scaleProps)
             elapsedPixels += intervalLength;
         }
+        scalePropsArray.sort((a, b) => a.start.x < b.start.x ? -1 : a.start.x > b.start.x ? 1 : 0)
         return scalePropsArray;
     }
 
@@ -106,25 +112,31 @@ export class TimelineController implements iTimelineController {
         return r;
     }
 
-    getRelativeScaleMap(): scaleProps[] {
+    public getRelativeScaleMap(): scaleProps[] {
         return this.scaleProps.get(this.scaleMode.relativeScaleType().getID())!;
     }
-    getParentScaleMap(): scaleProps[] | undefined {
-        return this.scaleProps.get(this.scaleMode.parent().getID())
+
+    public getParentScaleMap(): scaleProps[] {
+        return this.scaleProps.get(this.scaleMode.parent().getID())!
     }
-    getChildScaleMap(): scaleProps[] | undefined {
-        if(this.scaleMode.child()) {
-            this.scaleProps.get(this.scaleMode.child()!.getID())
+
+    public getChildScaleMap(): scaleProps[] | undefined {
+        if (this.scaleMode.child()) {
+            return this.scaleProps.get(this.scaleMode.child()!.getID())
         }
         return undefined
     }
 
 
-    scaleModeID(): string {
+    public scaleModeID(): string {
         return this.scaleMode.getId()
     }
 
-    lengthInPixels(): number {
-        return this.dayPixeLength * this.amountOfDays;
+    public getScaleMode(): ScaleMode {
+        return this.scaleMode;
+    }
+
+    public lengthInPixels(): number {
+        return this.dayPixeLength * this.amountOfDaysInView;
     }
 }

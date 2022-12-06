@@ -1,4 +1,4 @@
-import {MaxBoundsClearis, NodeViewSize, StartEndClearis} from "../../util/ExtraTypes";
+import {MaxBoundsClearis, NodeViewSize, StartEndClearis} from "../../../util/ExtraTypes";
 
 /// GENERIC NODE interface to extend component, and acces trough ref
 export interface iNodeViewWrapper {
@@ -16,10 +16,10 @@ export interface NodeViewWrapperProps {
     size: StartEndClearis;
 
     //Dragging
-    getMaxBounds: () => MaxBoundsClearis
-    onDragStart: (startEnd: StartEndClearis) => void;
-    onDrag:  (startEnd: StartEndClearis) => void;
-    onDragStop:  (startEnd: StartEndClearis) => void
+     getMaxBounds: () => MaxBoundsClearis
+    // onDragStart: (startEnd: StartEndClearis) => void;
+    // onDrag:  (startEnd: StartEndClearis) => void;
+    // onDragStop:  (startEnd: StartEndClearis) => void
 
 
     //todo:

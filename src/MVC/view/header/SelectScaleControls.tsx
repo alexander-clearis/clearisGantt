@@ -7,12 +7,16 @@ export interface SelectScaleControlProps {
 }
 
 export class SelectScaleControls extends Component<SelectScaleControlProps>{
+    constructor(props: SelectScaleControlProps) {
+        super(props);
+    }
 
     selectOptions(): ReactNode[] {
         const node: ReactNode[] = [];
         this.props.scaleModes.forEach((label, id) => {
             node.push(<option value={id}
-                              selected={(id === this.props.default)}>
+                              selected={(id === this.props.default)}
+            >
                 {label}
             </option>)
         })

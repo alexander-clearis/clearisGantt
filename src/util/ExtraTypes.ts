@@ -15,3 +15,13 @@ export type NodeViewSize = {
     x: number
     width: number;
 }
+
+
+export type timeXvalue = {
+    date: Date,
+    x: number,
+}
+export type scaleProps = {
+    start: timeXvalue;
+    end: timeXvalue;
+}
