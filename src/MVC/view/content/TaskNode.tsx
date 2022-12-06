@@ -1,5 +1,5 @@
 import {MaxBoundsClearis, NodeViewSize} from "../../../util/ExtraTypes";
-import {createElement, useState} from "react";
+import React, {createElement, useState} from "react";
 import {Rnd} from "react-rnd";
 import {useXarrow} from "react-xarrows";
 
@@ -19,28 +19,38 @@ export const TaskNode = (props: TaskViewProps) => {
     const updateArrows = useXarrow();
     const [nodeSizeX, _setNodeSizeX] = useState<number>(props.nodeSize.x)
     const [nodeSizeWidth, _setNodeSizeWidth] = useState<number>(props.nodeSize.width)
+    const rndRef: React.RefObject<Rnd> = React.createRef<Rnd>()
 
-
+    // @ts-ignore
+    let maxBounds = props.getMaxBounds();
+    const updateMaxBounds = () => maxBounds = props.getMaxBounds();
     // onDragStart: (startEnd: StartEndClearis) => void;
     // onDrag:  (startEnd: StartEndClearis) => void;
     // onDragStop:  (startEnd: StartEndClearis) => void
-
-
+    const doSMt = (): void => {
+        rndRef.current?.updatePosition({x: 0, y: 0})
+        rndRef.current?.updatePosition({x: 0, y: 0})
+        rndRef.current?.updatePosition({x: 0, y: 0})
+    }
     return <div className={"NodeBounds"}>
         <Rnd className={"TaskWrapper"}
-             parent
+             ref={rndRef}
              enableResizing={{left: true, right: true, top: false, bottom: false}}
              size={{width: nodeSizeWidth, height: "100%"}}
              position={{x: nodeSizeX, y: 0}}
-             dragGrid={[4, 4]}
+
              dragAxis={"x"}
 
              onDragStart={() => {
+                 updateMaxBounds();
+                 doSMt()
                  //     //    todo: use snap helper
                  // updateArrows()
+                 //    https://www.google.com/search?q=while+draggin+set+posoition+ReactRND&rlz=1C1ONGR_nlNL956NL956&oq=while+draggin+set+posoition+ReactRND&aqs=chrome..69i57j33i10i160l3.7231j0j7&sourceid=chrome&ie=UTF-8
 
              }}
              onDrag={(_e, _data) => {
+                 doSMt()
                  // forceBoundsOnDrag(_data);
                  // todo: updateSnapHelper
                  //     updateArrows()
