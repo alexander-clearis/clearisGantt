@@ -22,12 +22,15 @@ export interface iTimelineController {
 
     getChildScaleMap(): scaleProps[] | undefined
 
+
+    lengthInPixels(): number
+    dayInPixel(): number
 }
 
 
 export class TimelineController implements iTimelineController {
     private scaleMode: ScaleMode;
-    private amountOfDaysInView: number
+    private timelineLength: number;
     private dayPixeLength: number;
     private scaleProps: Map<string, scaleProps[]> = new Map<string, scaleProps[]>()
     private CommontimeXValues: timeXvalue[] = []
@@ -41,10 +44,9 @@ export class TimelineController implements iTimelineController {
 
         this.startDate = this.scaleMode.parent().floorDate(startDate)
         this.endDate = this.scaleMode.parent().ceilDate(endDate)
-        this.amountOfDaysInView = this.calculateAmountOfDays(startDate, scaleMode.parent().dateByIndex(startDate, scaleMode.parent_in_view()))
-        console.log(scaleMode.parent().dateByIndex(startDate, scaleMode.parent_in_view()));
-        console.log(this.amountOfDaysInView)
-        this.dayPixeLength = Math.floor(viewLength / this.amountOfDaysInView)
+        const amountOfDaysInView = this.calculateAmountOfDays(startDate, scaleMode.parent().dateByIndex(startDate, scaleMode.parent_in_view()))
+        this.dayPixeLength = Math.floor(viewLength / amountOfDaysInView)
+        this.timelineLength = this.dateToNumber(this.startDate, this.endDate);
         this.scaleProps.set(scaleMode.parent().getID(), this.generateScaleProps(scaleMode.parent()))
         if (scaleMode.child()) {
             this.scaleProps.set(scaleMode.child()!.getID(), this.generateScaleProps(scaleMode.child()!))
@@ -137,6 +139,9 @@ export class TimelineController implements iTimelineController {
     }
 
     public lengthInPixels(): number {
-        return this.dayPixeLength * this.amountOfDaysInView;
+        return this.timelineLength;
+    }
+    public dayInPixel(): number {
+        return this.dayPixeLength;
     }
 }

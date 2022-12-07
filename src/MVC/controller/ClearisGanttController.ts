@@ -3,7 +3,7 @@ import {ScaleMode} from "./scale/ScaleMode";
 import {iTimelineController, TimelineController} from "./TimelineController";
 import {ChartContent} from "../view/content/ChartContent";
 import React, {RefObject} from "react";
-import {iNodeController} from "./TaskController";
+import {iNodeController} from "./NodeController";
 
 export interface iGanttController {
     getTitle(): string
@@ -33,7 +33,6 @@ export class ClearisGanttController implements iGanttController {
     private viewHeight: number
     private timeline: iTimelineController
     private chartContent: RefObject<ChartContent> = React.createRef<ChartContent>();
-
     private nodes: iNodeController[]
 
     readonly scaleControllerMap = [

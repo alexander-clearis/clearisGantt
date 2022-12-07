@@ -1,8 +1,8 @@
 import {Component, createElement} from "react";
 import {ContentScaleBody, ContentScaleHeader} from "./ContentScale";
 import {iTimelineController} from "../../controller/TimelineController";
-import {iNodeController} from "../../controller/TaskController";
 import {NodeContent} from "./NodeContent";
+import {iNodeController} from "../../controller/NodeController";
 
 export interface ChartContentProps {
     timeline: iTimelineController

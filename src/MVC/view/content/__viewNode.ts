@@ -5,6 +5,12 @@ export interface iNodeViewWrapper {
     getAnchorID(): string;
     updateSize(startEnd: StartEndClearis): void;
     getStartEnd(): StartEndClearis
+
+    display(value: boolean): void
+    // displayChildren(value: boolean): void;
+    // setDisplay(value: boolean): void;
+    // setDisplayChildren(value: boolean): void;
+    // display(): boolean;
 }
 
 //// wrapper component props
@@ -12,11 +18,14 @@ export interface NodeViewWrapperProps {
     //TaskControllerProps
     name: string;
     id: string;
+    displayChildren: boolean;
     display: boolean;
     size: StartEndClearis;
-
+    timeLineLength: number;
+    dayPixelLength: number
+    getMaxBounds: () => MaxBoundsClearis;
+    bindDisplayChildren: (value: boolean) => void;
     //Dragging
-     getMaxBounds: () => MaxBoundsClearis
     // onDragStart: (startEnd: StartEndClearis) => void;
     // onDrag:  (startEnd: StartEndClearis) => void;
     // onDragStop:  (startEnd: StartEndClearis) => void
@@ -32,6 +41,7 @@ export interface NodeViewWrapperProps {
 //// wrapper comp state
 export interface NodeViewWrapperState {
     display: boolean
+    displayChildren: boolean
     nodeSize: NodeViewSize
 
 
