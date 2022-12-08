@@ -14,7 +14,7 @@
     height: auto;
 }
 
-.TaskLayer {
+.NodeContent {
 
 }
 
@@ -23,6 +23,7 @@
     height: 100%;
 }
 
+
 .ScaleMarker {
     height: 100%;
     width: 1px;
@@ -30,9 +31,18 @@
     background: lightgray;
 }
 
-.DateMarker {
+.Marker {
     height: 100%;
-    width: 1px;
     position: absolute;
+    transform: translateX(-50%);
+}
+
+.SnapHelper {
+    border-left: 3px orange dashed;
+}
+
+
+.Today {
+    border-left: 3px greenyellow dashed;
 }
 

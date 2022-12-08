@@ -11,6 +11,8 @@ export interface iGanttNode {
 
     setEnd(newEnd: Date): void;
 
+    setStartEnd(newStart: Date, newEnd: Date): void;
+
     onUpdate(): void;
 }
 
@@ -60,6 +62,12 @@ export abstract class TaskModelBase implements iTaskModel {
 
     getName(): string {
         return this.name;
+    }
+
+    setStartEnd(newStart: Date, newEnd: Date): void {
+        this.start = newStart;
+        this.end = newEnd;
+        this.onUpdate();
     }
 }
 

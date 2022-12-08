@@ -4,10 +4,10 @@ export type StartEndClearis =  {
 }
 
 export type MaxBoundsClearis = {
-    StartMin: number | undefined,
-    StartMax: number | undefined,
-    EndMin: number | undefined,
-    EndMax: number | undefined
+    StartMinL: number | undefined,
+    StartMaxL: number | undefined,
+    EndMinR: number | undefined,
+    EndMaxR: number | undefined
 }
 
 

@@ -1,12 +1,14 @@
 import {Component, createElement} from "react";
 import {ContentScaleBody, ContentScaleHeader} from "./ContentScale";
 import {iTimelineController} from "../../controller/TimelineController";
-import {iNodeController} from "../../controller/TaskController";
 import {NodeContent} from "./NodeContent";
+import {iNodeController} from "../../controller/NodeController";
+import {SnapController} from "../../controller/SnapController";
 
 export interface ChartContentProps {
     timeline: iTimelineController
     nodes: iNodeController[];
+    snapController: SnapController;
 }
 export interface ChartContentState {
     timeline: iTimelineController;
@@ -32,7 +34,7 @@ export class ChartContent extends Component<ChartContentProps, ChartContentState
                     <ContentScaleHeader timeline={this.state.timeline}/>
                     <div className={"CanvasContainer"}>
                         <ContentScaleBody timeline={this.state.timeline}></ContentScaleBody>
-                        <NodeContent timeline={this.state.timeline} nodes={this.props.nodes}> </NodeContent>
+                        <NodeContent timeline={this.state.timeline} nodes={this.props.nodes} snapController={this.props.snapController}> </NodeContent>
                     </div>
                 </div>
             </div>
