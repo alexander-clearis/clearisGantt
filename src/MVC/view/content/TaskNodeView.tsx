@@ -19,7 +19,7 @@ export interface nodeViewProps {
 
 }
 export interface TaskViewProps extends nodeViewProps{
-    onResizeStop: (dir: ResizeDirection, timeXvalue: timeXvalue) => void
+    onResizeStop: (dir: ResizeDirection, pos: timeXvalue) => void
 }
 export const TaskNodeView = (props: TaskViewProps) => {
     const RND_WrapperRef: React.RefObject<Rnd> = React.createRef<Rnd>()
@@ -119,21 +119,22 @@ export const TaskNodeView = (props: TaskViewProps) => {
         return (deltaBefore <= deltaAfter) ? snapPoint.before : snapPoint.after;
     }
     const onDragShowSnap = (x: number): void => {
-        props.useSnapHelper.showSnapHelper(closestToSnap(x, props.useSnapHelper.getSnapPoint(x)).x)
+        props.useSnapHelper.showSnapHelper(closestToSnap(x, props.useSnapHelper.getSnapOnDrag(x)).x)
     }
 
 
     const onResizeShowSnap = (dir: ResizeDirection, startEnd: StartEndClearis) => {
         const resizePoint = (dir === "left") ? startEnd.start : startEnd.end
-        props.useSnapHelper.showSnapHelper(closestToSnap(resizePoint, props.useSnapHelper.getSnapPoint(resizePoint)).x)
+        props.useSnapHelper.showSnapHelper(closestToSnap(resizePoint, props.useSnapHelper.getSnapOnDrag(resizePoint)).x)
     }
 
     const onDragStop = (data: DraggableData): void => {
         props.useSnapHelper.hideHelper()
-        props.onDragStop(closestToSnap(data.x, props.useSnapHelper.getSnapPoint(data.x)));
+        props.onDragStop(closestToSnap(data.x, props.useSnapHelper.getSnapOnDrag(data.x)));
     }
-    const onResizeStop = (_dir: ResizeDirection, _startEnd: StartEndClearis): void => {
-        // props.onResizeStop(_dir, )
+    const onResizeStop = (dir: ResizeDirection, startEnd: StartEndClearis): void => {
+        const resizePoint = (dir === "left") ? startEnd.start : startEnd.end
+        props.onResizeStop(dir, closestToSnap(resizePoint, props.useSnapHelper.getSnapOnDrag(resizePoint)))
         props.useSnapHelper.hideHelper()
 
     }

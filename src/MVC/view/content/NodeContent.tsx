@@ -23,12 +23,15 @@ export class NodeContent extends Component<NodeContentProps> {
                     timeLineLength={this.props.timeline.lengthInPixels()}
                     dayPixelLength={this.props.timeline.dayInPixel()}
                     dateToNumber={this.props.timeline.dateToNumber}
+                    numberToDate={this.props.timeline.numberToDate}
                     snapController={this.props.snapController.getUsageProps()}
-                    name={node.getName()}
+
+
                     size={{
                         start: this.props.timeline.dateToNumber(node.getStart()),
                         end: this.props.timeline.dateToNumber(node.getEnd())
                     }}
+                    name={node.getName()}
                     id={node.getID()}
                     display={node.display()}
                     displayChildren={node.displayChildren()}
@@ -38,6 +41,9 @@ export class NodeContent extends Component<NodeContentProps> {
                     updateOnResize={node.updateOnResize}
                     previewDragChildren={node.previewDragChildren}
                     bindDisplayChildren={node.bindDisplayChildren}
+
+                    getFirstChild={node.getFirstChild}
+                    getLastChild={node.getFirstChild}
                 />
                 {
                     (children)?.map(node => this.renderNodeWithChildren(node)) ?? null

@@ -40,6 +40,7 @@ export interface iNodeController {
 
     getFirstChild(): iNodeController | undefined;
     getLastChild(): iNodeController | undefined;
+
 }
 
 export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWrapper> implements iNodeController {
@@ -179,11 +180,11 @@ export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWr
         }
     }
 
-    getFirstChild(): iNodeController | undefined {
+    getFirstChild = (): iNodeController | undefined => {
         return this.children?.[0]
     }
 
-    getLastChild(): iNodeController | undefined {
+    getLastChild = (): iNodeController | undefined => {
         return this.children?.[this.children?.length - 1]
     }
 
@@ -207,4 +208,3 @@ export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWr
         return this.nodeView;
     };
 }
-

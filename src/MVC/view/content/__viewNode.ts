@@ -27,6 +27,7 @@ export interface NodeViewWrapperProps {
     snapController: useSnapHelper
 
     dateToNumber: (date1?: Date, date2?: Date) => number;
+    numberToDate: (value: number) => Date;
     updateOnDrag: (start: Date) => void
 
     //Dragging

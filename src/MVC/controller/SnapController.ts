@@ -8,7 +8,7 @@ export type SnapPoint = {
     after: timeXvalue
 }
 export type useSnapHelper = {
-    getSnapPoint: (pos: number) => SnapPoint;
+    getSnapOnDrag: (pos: number) => SnapPoint;
     hideHelper: () => void;
     showSnapHelper: (pos: number) => void;
 }
@@ -30,7 +30,7 @@ export class SnapController {
 
     public getUsageProps(): useSnapHelper {
         return {
-            getSnapPoint: this.getSnapPoint,
+            getSnapOnDrag: this.getSnapPoint,
             showSnapHelper: this.showSnapHelper,
             hideHelper: this.hideSnapHelper
         }
@@ -60,13 +60,17 @@ export class SnapController {
         }
     }
 
-    getMarkerRef(): React.RefObject<Marker>  {
+    getMarkerRef(): React.RefObject<Marker> {
         return this.markerRef;
     }
+
     showSnapHelper = (pos: number): void => {
         this.markerRef.current?.showSnapHelper(pos)
     }
+
     hideSnapHelper = (): void => {
         this.markerRef.current?.hideMarker();
     }
+
 }
+
