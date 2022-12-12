@@ -1,16 +1,14 @@
 import {MaxBoundsClearis, NodeViewSize, StartEndClearis} from "../../../util/ExtraTypes";
+import {useSnapHelper} from "../../controller/SnapController";
 
 /// GENERIC NODE interface to extend component, and acces trough ref
 export interface iNodeViewWrapper {
     getAnchorID(): string;
-    updateSize(startEnd: StartEndClearis): void;
+    // updateStartEnd(startEnd: StartEndClearis): void;
     getStartEnd(): StartEndClearis
-
+    updateStartEndDate(start: Date, end: Date): void;
     display(value: boolean): void
-    // displayChildren(value: boolean): void;
-    // setDisplay(value: boolean): void;
-    // setDisplayChildren(value: boolean): void;
-    // display(): boolean;
+    viewShift(delta: number): void
 }
 
 //// wrapper component props
@@ -25,6 +23,13 @@ export interface NodeViewWrapperProps {
     dayPixelLength: number
     getMaxBounds: () => MaxBoundsClearis;
     bindDisplayChildren: (value: boolean) => void;
+    previewDragChildren: (delta: number) => void;
+    snapController: useSnapHelper
+
+    dateToNumber: (date1?: Date, date2?: Date) => number;
+    numberToDate: (value: number) => Date;
+    updateOnDrag: (start: Date) => void
+
     //Dragging
     // onDragStart: (startEnd: StartEndClearis) => void;
     // onDrag:  (startEnd: StartEndClearis) => void;
@@ -43,7 +48,7 @@ export interface NodeViewWrapperState {
     display: boolean
     displayChildren: boolean
     nodeSize: NodeViewSize
-
+    deltaShift: number;
 
 }
 

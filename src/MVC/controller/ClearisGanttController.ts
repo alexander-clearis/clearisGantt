@@ -1,9 +1,10 @@
-import {MonthScale, YearScale} from "./scale/TimeScalesHelpers";
+import {DayScale, MonthScale, WeekScale, YearScale} from "./scale/TimeScalesHelpers";
 import {ScaleMode} from "./scale/ScaleMode";
 import {iTimelineController, TimelineController} from "./TimelineController";
 import {ChartContent} from "../view/content/ChartContent";
 import React, {RefObject} from "react";
-import {iNodeController} from "./NodeController";
+import {iNodeController, NodeController} from "./NodeController";
+import {SnapController} from "./SnapController";
 
 export interface iGanttController {
     getTitle(): string
@@ -25,6 +26,8 @@ export interface iGanttController {
     getTimeline(): iTimelineController;
 
     getNodes(): iNodeController[]
+
+    getSnapController(): SnapController
 }
 
 export class ClearisGanttController implements iGanttController {
@@ -34,10 +37,13 @@ export class ClearisGanttController implements iGanttController {
     private timeline: iTimelineController
     private chartContent: RefObject<ChartContent> = React.createRef<ChartContent>();
     private nodes: iNodeController[]
+    private snapController: SnapController;
 
     readonly scaleControllerMap = [
         // new ScaleMode("Day of the week", new WeekScale(), 1, new DayScale()),
-        new ScaleMode("1 Year", new YearScale(), 1, new MonthScale())
+        new ScaleMode("Month / Year", new YearScale(), 1, new MonthScale()),
+        new ScaleMode("Day / Month", new MonthScale(), 2, new DayScale()),
+        new ScaleMode("Week / Month", new MonthScale(), 2, new WeekScale())
     ]
     readonly defaultScale = this.scaleControllerMap[0].getId()
 
@@ -48,9 +54,8 @@ export class ClearisGanttController implements iGanttController {
         this.viewHeight = viewHeight;
         this.nodes = nodes;
         this.nodes.sort((a, b) => a.getStart().valueOf() < b.getStart().valueOf() ? -1 : a.getStart().valueOf() > b.getStart().valueOf() ? 1 : 0);
-        console.log(this.nodes)
-
         this.timeline = this.generateTimeline(this.scaleControllerMap[0])
+        this.snapController = new SnapController(this.timeline.getCommonTimeXValues(), NodeController.getNodes())
     }
 
     private generateTimeline(scaleMode: ScaleMode): iTimelineController {
@@ -102,6 +107,7 @@ export class ClearisGanttController implements iGanttController {
         if (this.timeline.scaleModeID() != scaleID) {
             const newScaleMode = this.scaleControllerMap.find(value => value.getId() === scaleID)!;
             this.timeline = this.generateTimeline(newScaleMode);
+            this.snapController.newCommonTimeXValues(this.timeline.getCommonTimeXValues());
             this.chartContent.current?.renderNewTimeline(this.timeline);
         }
     }
@@ -117,4 +123,8 @@ export class ClearisGanttController implements iGanttController {
     getNodes(): iNodeController[] {
         return this.nodes;
     };
+
+    getSnapController(): SnapController {
+        return this.snapController;
+    }
 }

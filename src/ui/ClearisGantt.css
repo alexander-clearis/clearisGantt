@@ -9,13 +9,12 @@ Place your custom CSS here
 .GanttLayout {
     display: flex;
     flex-flow: column;
-    min-height: 83vh;
     max-height: 83vh;
+    min-height: 83vh;
 }
 
 .ChartBody {
-    flex-grow: 1;
-    display: flex;
+
 }
 
 .ChartContent {
@@ -28,12 +27,8 @@ Place your custom CSS here
     width: 100%;
 }
 
-.BodyHeader {
-
-    height: 12.5%;
-    /*height: 50%;*/
-}
 .TimeScale.BodyHeader {
     display: table;
     width: auto;
+    height: 70px;
 }

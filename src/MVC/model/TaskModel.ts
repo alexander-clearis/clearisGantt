@@ -11,6 +11,8 @@ export interface iGanttNode {
 
     setEnd(newEnd: Date): void;
 
+    setStartEnd(newStart: Date, newEnd: Date): void;
+
     onUpdate(): void;
 }
 
@@ -61,15 +63,28 @@ export abstract class TaskModelBase implements iTaskModel {
     getName(): string {
         return this.name;
     }
+
+
+    setStartEnd(newStart: Date, newEnd: Date): void {
+        this.start = newStart;
+        this.end = newEnd
+        this.onUpdate();
+    }
 }
 
 export class MockTaskModel extends TaskModelBase {
+
+    constructor(name: string, id: string, start: Date, end: Date) {
+        end.setMinutes(-1);
+        super(name, id, start, end);
+    }
+
     onUpdate() {
         console.log("TaskUpdateCall: ", JSON.stringify({
             name: this.name,
             guid: this.id,
-            start: this.start,
-            end: this.end
+            start: this.start.toLocaleString(),
+            end: this.end.toLocaleString()
         }))
     }
 }

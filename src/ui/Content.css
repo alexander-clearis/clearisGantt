@@ -1,27 +1,21 @@
-.CanvasContainer {
+.ContentContainer {
     width: 100%;
-    height: 100%;
-}
-
-.Canvas {
+    min-height: 350px;
     position: relative;
+}
+
+.ContentLayer {
+    position: absolute;
     height: 100%;
 }
 
-.CanvasLayer {
-    position: absolute;
-    width: 100%;
+.NodeContent {
+    min-height: 100%;
     height: auto;
 }
 
-.TaskLayer {
-
-}
 
 
-.CanvasLayer {
-    height: 100%;
-}
 
 .ScaleMarker {
     height: 100%;
@@ -30,9 +24,18 @@
     background: lightgray;
 }
 
-.DateMarker {
+.Marker {
     height: 100%;
-    width: 1px;
     position: absolute;
+    transform: translateX(-50%);
+}
+
+.SnapHelper {
+    border-left: 3px orange dashed;
+}
+
+
+.Today {
+    border-left: 3px greenyellow dashed;
 }
 

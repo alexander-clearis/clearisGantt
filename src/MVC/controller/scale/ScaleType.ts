@@ -9,7 +9,6 @@ export abstract class ScaleType {
 
     ceilDate(date: Date): Date {
         const r: Date = this.dateByIndex(this.floorDate(date), 1);
-        r.setMinutes(-1)
         return r;
     }
 

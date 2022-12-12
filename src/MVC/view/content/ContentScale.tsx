@@ -19,7 +19,7 @@ export class ContentScaleBody extends Component<ContentScaleProps> {
 
 
     render() {
-        return <div className={"TaskScaleLayer CanvasLayer"}>
+        return <div className={"TaskScaleLayer ContentLayer"}>
             {this.renderScale()}
         </div>;
     }

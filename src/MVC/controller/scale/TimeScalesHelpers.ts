@@ -1,4 +1,3 @@
-import {Day} from "./Day";
 import {Month} from "./Month";
 import {ScaleType} from "./ScaleType";
 
@@ -6,18 +5,17 @@ export class DayScale extends ScaleType {
     mode = "DAY OF THE WEEK";
 
     dateToIntervalLabel(labelDate: Date): string {
-        return Day[this.floorDate(labelDate).getDay()];
+        return labelDate.getDate().toString();
+        // return Day[this.floorDate(labelDate).getDay()];
     }
 
     floorDate(date: Date): Date {
-        const r: Date = new Date(date);
-        r.setHours(0, 0, 0, 0);
+        const r: Date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
         return r;
     }
 
     ceilDate(date: Date): Date {
-        const r: Date = new Date(date);
-        r.setHours(23, 59, 59, 0);
+        const r: Date = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
         return r;
     }
 

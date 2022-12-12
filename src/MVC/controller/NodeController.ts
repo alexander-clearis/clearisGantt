@@ -21,6 +21,10 @@ export interface iNodeController {
     getAnchorID(): string;
 
     bindDisplayChildren: (value: boolean) => void
+    previewDragChildren: (delta: number) => void
+    updateOnDrag: (newStart: Date) => void
+
+    updateStartEndDelta(deltaStart: number, deltaEnd: number): void
 
     display(): boolean;
 
@@ -30,9 +34,13 @@ export interface iNodeController {
 
     getStartEndView(): StartEndClearis | undefined
 
-    getMaxBounds(): MaxBoundsClearis;
+    getMaxBounds: () => MaxBoundsClearis;
 
     getViewRef(): RefObject<iNodeViewWrapper>
+
+    getFirstChild(): iNodeController | undefined;
+    getLastChild(): iNodeController | undefined;
+
 }
 
 export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWrapper> implements iNodeController {
@@ -45,7 +53,19 @@ export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWr
     protected _displayChildren: boolean = false;
 
 
+    public static Nodes: iNodeController[] = [];
+
+    public static getNodes() {
+        return this.Nodes;
+    }
+
+    public static getNode(id: string): iNodeController | undefined {
+        return this.Nodes.find(node => node.getID() === id);
+    }
+
     constructor(nodeModel: M, children?: iNodeController[]) {
+        NodeController.Nodes.push(this)
+
         this.nodeModel = nodeModel;
         this.children = children;
         this.children?.sort((a, b) => a.getStart().valueOf() < b.getStart().valueOf() ? -1 : a.getStart().valueOf() > b.getStart().valueOf() ? 1 : 0);
@@ -55,9 +75,6 @@ export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWr
         })
     }
 
-    getAnchorID(): string {
-        return this.nodeView.current?.getAnchorID() ?? "UNDEFINED REF";
-    }
 
     addParent(parent: iNodeController) {
         this.parent = parent;
@@ -71,11 +88,49 @@ export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWr
         return this.children;
     }
 
-    display(): boolean {
+    public updateOnDrag = (newStart: Date): void => {
+        let delta = newStart.valueOf() - this.getStart().valueOf();
+        const newEnd = new Date(this.getEnd().valueOf() + delta);
+        this.setStartEnd(newStart, newEnd)
+    }
+
+
+    protected setStartEnd(newStart: Date, newEnd: Date): void {
+        const deltaStart = newStart.valueOf() - this.getStart().valueOf();
+        const deltaEnd = newEnd.valueOf() - this.getEnd().valueOf();
+        this.nodeModel.setStartEnd(newStart, newEnd);
+        this.updateViewStartEnd(newStart, newEnd);
+        this.updateChildrenStartEnd(deltaStart, deltaEnd);
+    }
+
+    // DO NOT CALL ON SELF!
+    public updateStartEndDelta(deltaStart: number, deltaEnd: number): void {
+        const newStart = new Date(this.getStart().valueOf() + deltaStart);
+        const newEnd = new Date(this.getEnd().valueOf() + deltaEnd);
+
+        this.nodeModel.setStartEnd(newStart, newEnd);
+        this.updateChildrenStartEnd(deltaStart, deltaEnd);
+        this.updateViewStartEnd(newStart, newEnd)
+    }
+
+    protected updateViewStartEnd(start: Date, end: Date): void {
+        this.nodeView.current?.updateStartEndDate(start, end);
+    }
+
+    private updateChildrenStartEnd(deltaStart: number, deltaEnd: number): void {
+        this.children?.forEach(child => child.updateStartEndDelta(deltaStart, deltaEnd))
+    }
+
+
+    getAnchorID(): string {
+        return this.nodeView.current?.getAnchorID() ?? "UNDEFINED REF";
+    }
+
+    public display(): boolean {
         return this._display;
     }
 
-    setDisplay(value: boolean): void {
+    public setDisplay(value: boolean): void {
         if (this._display != value) {
             this._display = value;
             this.nodeView.current?.display(value);
@@ -100,6 +155,14 @@ export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWr
             this.children?.forEach(child => child.setDisplay(value))
         }
     }
+    previewDragChildren = (delta: number): void => {
+        this.children?.forEach(child => {
+            if (child.display()) {
+                child.getViewRef()?.current?.viewShift(delta);
+                child.previewDragChildren(delta);
+            }
+        })
+    }
 
     getStartEndView(): StartEndClearis | undefined {
         return this.nodeView.current?.getStartEnd()
@@ -107,7 +170,7 @@ export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWr
 
     getMaxBounds = (): MaxBoundsClearis => {
         const parentStartEnd = this.parent?.getStartEndView();
-        const firstChild = this.children?.[0].getStartEndView();
+        const firstChild = this.getFirstChild()?.getStartEndView();
         const last = this.children?.[this.children?.length - 1].getStartEndView();
         return {
             StartMinL: parentStartEnd?.start,
@@ -115,6 +178,14 @@ export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWr
             EndMinR: last?.end,
             EndMaxR: parentStartEnd?.end
         }
+    }
+
+    getFirstChild = (): iNodeController | undefined => {
+        return this.children?.[0]
+    }
+
+    getLastChild = (): iNodeController | undefined => {
+        return this.children?.[this.children?.length - 1]
     }
 
     getName(): string {
@@ -137,4 +208,3 @@ export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWr
         return this.nodeView;
     };
 }
-

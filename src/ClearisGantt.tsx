@@ -18,15 +18,16 @@ export default class ClearisGantt extends Component<ClearisGanttContainerProps> 
             "Taak ZERO", uuid(), new Date(2020, 0, 1), new Date(2020, 1, 1)
         ),
         new MockTaskModel(
-            "Taak UNO", uuid(), new Date(2019, 0, 1), new Date(2019, 1, 1)
+            "Taak UNO", uuid(), new Date(2019, 6, 1), new Date(2019, 7, 1)
         ),
         new MockTaskModel(
-            "Taak DOS", uuid(), new Date(2019, 0, 1), new Date(2019, 1, 1)
+            "Taak DOS", uuid(), new Date(2019, 6, 1), new Date(2019, 7, 1)
         ),
         new MockTaskModel(
             "Taak Tres", uuid(), new Date(2019, 1, 1), new Date(2019, 6, 1)
         ),
         new MockTaskModel("Taak Quatro", uuid(), new Date(2019, 7, 12), new Date(2020, 1, 1)),
+        new MockTaskModel("Taak Quatro", uuid(), new Date(2022, 9, 12), new Date(2022, 11, 25)),
     ]
     private childModels: iTaskModel[] = [
         new MockTaskModel("T", uuid(), new Date(2019, 1, 1), new Date(2019, 2, 1)),
@@ -46,7 +47,8 @@ export default class ClearisGantt extends Component<ClearisGanttContainerProps> 
         new TaskController(this.constructorNodeModels[1]),
         new TaskController(this.constructorNodeModels[2]),
         new TaskController(this.constructorNodeModels[3], this.childControllers),
-        new TaskController(this.constructorNodeModels[4])
+        new TaskController(this.constructorNodeModels[4]),
+        new TaskController(this.constructorNodeModels[5])
     ]
 
 
