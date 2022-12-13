@@ -10,6 +10,7 @@
   },
   "license": "Apache-2.0",
   "config": {
+    "widgetPath": "dist/tmp/widgets",
     "projectPath": "../../",
     "mendixHost": "http://localhost:8080",
     "developmentPort": 3000
@@ -19,15 +20,15 @@
     "startJelte": "concurrently \"pluggable-widgets-tools start:server --open\" \"npm:dev\"",
 
     "start": "pluggable-widgets-tools start:server",
-    "dev": "pluggable-widgets-tools start:web",
-    "build": "pluggable-widgets-tools build:web",
+    "dev": "pluggable-widgets-tools start:js",
+    "build": "pluggable-widgets-tools build:js",
     "lint": "pluggable-widgets-tools lint",
     "lint:fix": "pluggable-widgets-tools lint:fix",
     "prerelease": "npm run lint",
     "release": "pluggable-widgets-tools release:web"
   },
   "devDependencies": {
-    "@mendix/pluggable-widgets-tools": "8.18.4",
+    "@mendix/pluggable-widgets-tools": "8.7.2",
     "@types/big.js": "^6.0.2",
     "@types/react": "~17.0.1",
     "@types/react-dom": "~17.0.1",
