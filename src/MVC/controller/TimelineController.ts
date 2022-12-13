@@ -50,7 +50,7 @@ export class TimelineController implements iTimelineController {
 
         this._startDate = this.scaleMode.parent().floorDate(startDate)
         this._endDate = this.scaleMode.parent().ceilDate(endDate)
-        let amountOfDaysInView = this.calculateAmountOfDays(startDate, scaleMode.parent().dateByIndex(startDate, scaleMode.parent_in_view()))
+        let amountOfDaysInView = this.calculateAmountOfDays(this._startDate, scaleMode.parent().dateByIndex(startDate, scaleMode.parent_in_view()))
 
         this.dayPixeLength = Math.floor(viewLength / amountOfDaysInView)
         this.timelineLength = this.dateToNumber(this._startDate, this._endDate);
@@ -71,7 +71,7 @@ export class TimelineController implements iTimelineController {
     }
 
     public calculateAmountOfDays(startDate: Date, endDate: Date): number {
-        const diff = startDate.valueOf() - endDate.valueOf();
+        const diff =  endDate.valueOf() - startDate.valueOf();
         return Math.round(diff / (1000 * 3600 * 24));
     }
 
@@ -97,17 +97,14 @@ export class TimelineController implements iTimelineController {
         let i = 0;
         let intervalStartDate = scaleType.floorDate(this._startDate);
         let intervalEndDate = scaleType.ceilDate(intervalStartDate);
-        console.log(this.dayPixeLength)
-        console.log(this.calculateAmountOfDays(this._startDate, intervalStartDate));
-        let elapsedPixels = this.dateToNumber(intervalStartDate);
 
+        let elapsedPixels = this.dateToNumber(intervalStartDate);
         for (; intervalEndDate.valueOf() <= this._endDate.valueOf(); i++, intervalStartDate = new Date(scaleType.dateByIndex(this._startDate, i)), intervalEndDate = scaleType.ceilDate(intervalStartDate)) {
             const intervalLength = this.dateToNumber(intervalStartDate, intervalEndDate)
             const scaleProps: scaleProps = {
                 start: this.newTimeXValue(intervalStartDate, elapsedPixels),
                 end: this.newTimeXValue(intervalEndDate, elapsedPixels + intervalLength)
             };
-
             scalePropsArray.push(scaleProps)
             elapsedPixels += intervalLength;
         }

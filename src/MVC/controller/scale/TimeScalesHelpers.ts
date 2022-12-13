@@ -45,17 +45,18 @@ export class WeekScale extends ScaleType {
         if (tdt.getDay() !== 4) {
             tdt.setMonth(0, 1 + ((4 - tdt.getDay()) + 7) % 7);
         }
-        return 1 + Math.floor((firstThursday - tdt.valueOf()) / 604800000);
+        return 1 + Math.ceil((firstThursday - tdt.valueOf()) / 604800000);
     }
 
     dateByIndex(startDate: Date, index: number): Date {
         const r: Date = this.floorDate(startDate);
-        r.setDate(startDate.getDate() + (index * 7));
+        r.setDate(r.getDate() + (index * 7));
         return r;
     }
 
     dateToIntervalLabel(labelDate: Date): string {
-        return "Week " + this.getWeekNr(labelDate) + " " + labelDate.getFullYear();
+        // return labelDate.toLocaleString()
+        return "W " + this.getWeekNr(labelDate)
     }
 
     floorDate(date: Date): Date {
@@ -65,8 +66,8 @@ export class WeekScale extends ScaleType {
     }
 
     ceilDate(date: Date): Date {
-        const r: Date = this.dateByIndex(this.floorDate(date), 1);
-        r.setMinutes(-1)
+        const r: Date = this.floorDate(date)
+        r.setDate(r.getDate() + 7)
         return r;
     }
 

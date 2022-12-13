@@ -43,10 +43,10 @@ export class ClearisGanttController implements iGanttController {
         // new ScaleMode("Day of the week", new WeekScale(), 1, new DayScale()),
         new ScaleMode("Month / Year", new YearScale(), 1, new MonthScale()),
         new ScaleMode("Day / Month", new MonthScale(), 2, new DayScale()),
-        new ScaleMode("Week / Month", new MonthScale(), 2, new WeekScale())
+        new ScaleMode("Week / Month", new MonthScale(), 4, new WeekScale()),
+        new ScaleMode("Day / Week", new WeekScale(), 7, new DayScale())
     ]
     readonly defaultScale = this.scaleControllerMap[0].getId()
-
 
     constructor(title: string, viewLength: number, viewHeight: number, nodes: iNodeController[]) {
         this.title = title;
