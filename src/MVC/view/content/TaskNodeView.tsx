@@ -137,14 +137,14 @@ export const TaskNodeView = (props: TaskViewProps) => {
         props.useSnapHelper.hideHelper()
 
     }
-    return <div className={"NodeBounds"}>
-        <Rnd className={"TaskWrapper"}
+    return <Rnd className={"TaskWrapper"}
              ref={RND_WrapperRef}
              bounds={"parent"}
              enableResizing={{left: true, right: true, top: false, bottom: false}}
-             size={{width: props.nodeSize.width, height: "100%"}}
+             size={{width: props.nodeSize.width + "px", height: "100%"}}
              position={{x: props.nodeSize.x, y: 0}}
-
+             enableUserSelectHack={false}
+             allowAnyClick={false}
              dragAxis={"x"}
              minWidth={props.dayPixelLength}
 
@@ -192,5 +192,4 @@ export const TaskNodeView = (props: TaskViewProps) => {
                 <p>width = {props.nodeSize.width}</p>
             </div>
         </Rnd>
-    </div>
 }

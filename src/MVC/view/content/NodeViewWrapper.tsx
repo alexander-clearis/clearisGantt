@@ -1,8 +1,12 @@
 import {iNodeViewWrapper, NodeViewWrapperProps, NodeViewWrapperState} from "./__viewNode";
-import {Component, ReactNode} from "react";
+import {Component, createElement, ReactNode} from "react";
 import {NodeViewSize, StartEndClearis, timeXvalue} from "../../../util/ExtraTypes";
 
 export abstract class NodeViewWrapper<P extends NodeViewWrapperProps, S extends NodeViewWrapperState> extends Component<P, S> implements iNodeViewWrapper {
+    constructor(props: P) {
+        super(props);
+    }
+
     protected readonly anchorID = "NodeAnchor-" + this.props.id;
 
     public getAnchorID(): string {
@@ -16,6 +20,23 @@ export abstract class NodeViewWrapper<P extends NodeViewWrapperProps, S extends 
         }
     };
 
+    private propsUpDateSize(): boolean {
+        return !(this.props.size.start === this.state.nodeSize.x && this.state.nodeSize.x + this.state.nodeSize.width === this.props.size.end);
+    }
+
+    componentDidUpdate(prevProps: Readonly<P>,) {
+        if (prevProps.size != this.props.size) {
+            if (this.propsUpDateSize()) {
+                this.setState({
+                    nodeSize: {
+                        x: this.props.size.start,
+                        width: this.props.size.end - this.props.size.start
+                    }
+                })
+            }
+        }
+    }
+
     updateStartEndDate(start: Date, end: Date): void {
         this.setState({
             nodeSize: {
@@ -25,7 +46,6 @@ export abstract class NodeViewWrapper<P extends NodeViewWrapperProps, S extends 
             deltaShift: 0
         })
     }
-
 
     public viewShift(delta: number): void {
         this.setState((prevState) => {
@@ -41,7 +61,6 @@ export abstract class NodeViewWrapper<P extends NodeViewWrapperProps, S extends 
     }
 
     onDragStop = (timeXValue: timeXvalue): void => {
-        console.log("DRAGSTOP")
         this.props.previewDragChildren(0);
         if (timeXValue.x != this.state.nodeSize.x) {
             this.props.updateOnDrag(timeXValue.date);
@@ -75,7 +94,10 @@ export abstract class NodeViewWrapper<P extends NodeViewWrapperProps, S extends 
 
     public render() {
         if (this.state.display) {
-            return this.renderNode();
+
+            return <div className={"NodeBounds"}>
+                {this.renderNode()}
+            </div>
         } else {
             return null;
         }

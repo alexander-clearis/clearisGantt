@@ -61,7 +61,7 @@ export class ContentScaleHeader extends Component<ContentScaleProps> {
 
     render() {
         return (
-            <div className="TimeScale BodyHeader">
+            <div className="TimeScale ContentHeader" style={{width: this.props.timeline.lengthInPixels() + "px"}}>
                 {this.renderContentScaleHeader()}
             </div>
         );

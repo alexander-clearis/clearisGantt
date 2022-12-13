@@ -13,7 +13,7 @@ export interface TaskViewWrapperProps extends NodeViewWrapperProps {
 }
 
 export interface TaskViewWrapperState extends NodeViewWrapperState {
-
+    timelineLength: number
 }
 
 export interface iTaskViewWrapper extends NodeViewWrapper<TaskViewWrapperProps, TaskViewWrapperState>, iNodeViewWrapper {
@@ -21,6 +21,7 @@ export interface iTaskViewWrapper extends NodeViewWrapper<TaskViewWrapperProps, 
 }
 
 export class TaskViewWrapper extends NodeViewWrapper<TaskViewWrapperProps, TaskViewWrapperState> implements iTaskViewWrapper {
+
 
     constructor(props: TaskViewWrapperProps) {
         super(props);
@@ -31,10 +32,19 @@ export class TaskViewWrapper extends NodeViewWrapper<TaskViewWrapperProps, TaskV
             nodeSize: {
                 x: this.props.size.start,
                 width: this.props.size.end - this.props.size.start
-            }
+            },
+            timelineLength: this.props.timeLineLength
         }
+
     }
 
+
+    componentDidUpdate(prevProps:Readonly<TaskViewWrapperProps>) {
+        super.componentDidUpdate(prevProps);
+        if(this.state.timelineLength != this.props.timeLineLength) {
+            this.setState({timelineLength: this.props.timeLineLength})
+        }
+    }
 
     private onResizeStop = (_dir: ResizeDirection, timeXvalue: timeXvalue) => {
         console.log(
@@ -84,6 +94,8 @@ export class TaskViewWrapper extends NodeViewWrapper<TaskViewWrapperProps, TaskV
 
     renderNode():
         React.ReactNode {
+
+
         return <TaskNodeView name={this.props.name} anchorID={this.anchorID} nodeSize={this.getNodeSize()}
                              getMaxBounds={this.props.getMaxBounds}
                              timelineLength={this.props.timeLineLength} dayPixelLength={this.props.dayPixelLength}

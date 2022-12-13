@@ -48,9 +48,10 @@ export class TimelineController implements iTimelineController {
     constructor(startDate: Date, endDate: Date, viewLength: number, scaleMode: ScaleMode) {
         this.scaleMode = scaleMode
 
-        this._startDate = this.scaleMode.parent().floorDate(startDate)
-        this._endDate = this.scaleMode.parent().ceilDate(endDate)
-        let amountOfDaysInView = this.calculateAmountOfDays(this._startDate, scaleMode.parent().dateByIndex(startDate, scaleMode.parent_in_view()))
+        this._startDate = this.scaleMode.parent().dateByIndex(startDate, -1)
+        console.log(this._startDate)
+        this._endDate = this.scaleMode.parent().ceilDate(this.scaleMode.parent().dateByIndex(endDate, 1))
+        let amountOfDaysInView = this.calculateAmountOfDays(this._startDate, scaleMode.parent().dateByIndex(this._startDate, scaleMode.parent_in_view()))
 
         this.dayPixeLength = Math.floor(viewLength / amountOfDaysInView)
         this.timelineLength = this.dateToNumber(this._startDate, this._endDate);

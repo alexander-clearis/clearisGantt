@@ -19,49 +19,51 @@ export class NodeContent extends Component<NodeContentProps> {
         const children = node.getChildren();
         if (node instanceof TaskController) {
             return <Fragment>
-                <TaskViewWrapper
-                    timeLineLength={this.props.timeline.lengthInPixels()}
-                    dayPixelLength={this.props.timeline.dayInPixel()}
-                    dateToNumber={this.props.timeline.dateToNumber}
-                    numberToDate={this.props.timeline.numberToDate}
-                    snapController={this.props.snapController.getUsageProps()}
+                    <TaskViewWrapper
+                        timeLineLength={this.props.timeline.lengthInPixels()}
+                        dayPixelLength={this.props.timeline.dayInPixel()}
+                        dateToNumber={this.props.timeline.dateToNumber}
+                        numberToDate={this.props.timeline.numberToDate}
+                        snapController={this.props.snapController.getUsageProps()}
 
 
-                    size={{
-                        start: this.props.timeline.dateToNumber(node.getStart()),
-                        end: this.props.timeline.dateToNumber(node.getEnd())
-                    }}
-                    name={node.getName()}
-                    id={node.getID()}
-                    display={node.display()}
-                    displayChildren={node.displayChildren()}
-                    getMaxBounds={node.getMaxBounds}
-                    ref={node.getViewRef()}
-                    updateOnDrag={node.updateOnDrag}
-                    updateOnResize={node.updateOnResize}
-                    previewDragChildren={node.previewDragChildren}
-                    bindDisplayChildren={node.bindDisplayChildren}
+                        size={{
+                            start: this.props.timeline.dateToNumber(node.getStart()),
+                            end: this.props.timeline.dateToNumber(node.getEnd())
+                        }}
+                        name={node.getName()}
+                        id={node.getID()}
+                        display={node.display()}
+                        displayChildren={node.displayChildren()}
+                        getMaxBounds={node.getMaxBounds}
+                        ref={node.getViewRef()}
+                        updateOnDrag={node.updateOnDrag}
+                        updateOnResize={node.updateOnResize}
+                        previewDragChildren={node.previewDragChildren}
+                        bindDisplayChildren={node.bindDisplayChildren}
 
-                    getFirstChild={node.getFirstChild}
-                    getLastChild={node.getFirstChild}
-                />
+                        getFirstChild={node.getFirstChild}
+                        getLastChild={node.getFirstChild}
+                    />
                 {
                     (children)?.map(node => this.renderNodeWithChildren(node)) ?? null
                 }
+
             </Fragment>
         }
     }
 
+
     renderMarkers(): ReactNode {
-        const today = new Date()
+        // const today = new Date()
         return (<Fragment>
                 <Marker className={"SnapHelper"} display={false} ref={this.props.snapController.getMarkerRef()}
                         pos={200}/>
                 {
 
-                    (today.valueOf() > this.props.timeline.startDate().valueOf() && today.valueOf() < this.props.timeline.endDate().valueOf())
-                        ? <Marker pos={this.props.timeline.dateToNumber(today)} display={true}
-                                  className={"Today"}/> : null
+                    // (today.valueOf() > this.props.timeline.startDate().valueOf() && today.valueOf() < this.props.timeline.endDate().valueOf())
+                    //     ? <Marker pos={this.props.timeline.dateToNumber(today)} display={true}
+                    //               className={"Today"}/> : null
                 }
 
 
@@ -71,7 +73,7 @@ export class NodeContent extends Component<NodeContentProps> {
 
     render() {
         return (
-            <div className={"NodeContent"}>
+            <div className={"NodeContent"} style={{width: this.props.timeline.lengthInPixels() + "px"}}>
                 <Xwrapper>
                     {this.renderMarkers()}
                     {this.props.nodes.map(parentNode => this.renderNodeWithChildren(parentNode))}

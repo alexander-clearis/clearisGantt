@@ -16,6 +16,8 @@
   },
   "packagePath": "clearis",
   "scripts": {
+    "startJelte": "concurrently \"pluggable-widgets-tools start:server --open\" \"npm:dev\"",
+
     "start": "pluggable-widgets-tools start:server",
     "dev": "pluggable-widgets-tools start:web",
     "build": "pluggable-widgets-tools build:web",

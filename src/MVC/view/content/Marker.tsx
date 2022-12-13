@@ -21,6 +21,14 @@ export class Marker extends Component<TimeMarkerProps, TimeMarkerState> {
         super(props);
     }
 
+    componentDidUpdate(prevProps: Readonly<TimeMarkerProps>) {
+        if(this.props != prevProps) {
+            this.setState({
+                pos: this.props.pos
+            })
+        }
+    }
+
     public showSnapHelper(x: number): void {
         this.setState({pos: x, display: true})
     }
