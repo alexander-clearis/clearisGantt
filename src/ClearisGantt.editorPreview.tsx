@@ -5,7 +5,7 @@ import {ClearisGanttController} from "./MVC/controller/ClearisGanttController";
 
 export class preview extends Component<ClearisGanttPreviewProps> {
     render(): ReactNode {
-        return <ClearsGanttContainer GanttController={new ClearisGanttController(this.props.chartTitle.valueOf(), 1500, 640, [])} />;
+        return <ClearsGanttContainer GanttController={new ClearisGanttController("TEST", 1500, 640, [])} />;
     }
 
 }

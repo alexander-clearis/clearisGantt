@@ -36,7 +36,7 @@ export class ContentScaleHeader extends Component<ContentScaleProps> {
 
         nodes.push(<div className={"IntervalRow Parent"}
                         style={{height: hasChild ? "50%" : "100%"}}> {this.renderScaleMap(scaleMode.parent(), parentScaleMap)}</div>)
-        if (hasChild) {
+        if (childScaleMap != undefined) {
             nodes.push(<div className={"IntervalRow Child"}
                             style={{height: "50%"}}> {this.renderScaleMap(scaleMode.child()!, childScaleMap)}</div>)
         }

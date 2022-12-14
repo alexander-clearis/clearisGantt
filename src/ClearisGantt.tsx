@@ -54,12 +54,12 @@ export default class ClearisGantt extends Component<ClearisGanttContainerProps> 
 
     constructor(props: ClearisGanttContainerProps, context: any) {
         super(props, context);
-        this.service = new ClearisGanttController(this.props.chartTitle.value ? this.props.chartTitle.value : this.props.chartTitle.status, 1500, 640, this.constructorNodeControllers);
+        this.service = new ClearisGanttController("TEST", 1500, 640, this.constructorNodeControllers);
     }
 
     updateChartTitle() {
 
-        this.service.setTitle(this.props.chartTitle.value ? this.props.chartTitle.value : "NO TITLE");
+        this.service.setTitle("NO TITLE");
     }
 
     render(): ReactNode {
