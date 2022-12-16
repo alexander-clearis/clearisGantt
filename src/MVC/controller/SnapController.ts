@@ -37,12 +37,14 @@ export class SnapController {
     }
 
     getNodeValues(): timeXvalue[] {
-        return this.nodes.filter(node => node.display()).flatMap(value => {
+        const r: timeXvalue[] = []
+        this.nodes.filter(node => node.display()).map(value => {
             const nodeS = value.getStartEndView();
             const startD = value.getStart()
             const end = value.getEnd();
-            return [{x: nodeS!.start, date: startD}, {x: nodeS!.end, date: end}]
+            r.push({x: nodeS!.start, date: startD}, {x: nodeS!.end, date: end})
         });
+        return r
     }
 
     findClosest(arr: timeXvalue[], pos: number) {

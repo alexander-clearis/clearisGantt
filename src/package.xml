@@ -5,7 +5,7 @@
             <widgetFile path="ClearisGantt.xml"/>
         </widgetFiles>
         <files>
-            <file path="clearis/clearisgantt"/>
+            <file path="mendix/clearisgantt"/>
         </files>
     </clientModule>
 </package>

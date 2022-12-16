@@ -8,7 +8,7 @@ import {iTaskModel, MockTaskModel} from "./MVC/model/TaskModel";
 import {v4 as uuid} from "uuid";
 import {iNodeController} from "./MVC/controller/NodeController";
 
-export default class ClearisGantt extends Component<ClearisGanttContainerProps> {
+class ClearisGantt extends Component<ClearisGanttContainerProps> {
 
     private readonly service: iGanttController;
 
@@ -54,12 +54,12 @@ export default class ClearisGantt extends Component<ClearisGanttContainerProps> 
 
     constructor(props: ClearisGanttContainerProps, context: any) {
         super(props, context);
-        this.service = new ClearisGanttController(this.props.chartTitle.value ? this.props.chartTitle.value : this.props.chartTitle.status, 1500, 640, this.constructorNodeControllers);
+        this.service = new ClearisGanttController("PROJECT TITLE", 1500, 640, this.constructorNodeControllers);
     }
 
     updateChartTitle() {
 
-        this.service.setTitle(this.props.chartTitle.value ? this.props.chartTitle.value : "NO TITLE");
+        // this.service.setTitle(this.props.chartTitle.value ? this.props.chartTitle.value : "NO TITLE");
     }
 
     render(): ReactNode {
@@ -68,3 +68,5 @@ export default class ClearisGantt extends Component<ClearisGanttContainerProps> 
         return <ClearsGanttContainer GanttController={this.service}/>
     }
 }
+
+export default ClearisGantt

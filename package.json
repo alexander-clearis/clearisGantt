@@ -10,12 +10,11 @@
   },
   "license": "Apache-2.0",
   "config": {
-    "widgetPath": "dist/tmp/widgets",
     "projectPath": "../../",
     "mendixHost": "http://localhost:8080",
     "developmentPort": 3000
   },
-  "packagePath": "clearis",
+  "packagePath": "com.mendix.widget.custom",
   "scripts": {
     "startJelte": "concurrently \"pluggable-widgets-tools start:server --open\" \"npm:dev\"",
 
@@ -33,12 +32,12 @@
     "@types/react": "~17.0.1",
     "@types/react-dom": "~17.0.1",
     "@types/uuid": "^8.3.4",
-    "react-rnd": "^10.3.7",
-    "rollup-plugin-async": "^1.2.0"
+    "react-rnd": "^10.3.7"
   },
   "dependencies": {
     "classnames": "^2.2.6",
     "react-xarrows": "^2.0.2",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "mendix-client": "^7.15.8"
   }
 }
