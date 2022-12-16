@@ -88,3 +88,28 @@ export class MockTaskModel extends TaskModelBase {
         }))
     }
 }
+export class MendixCustomWidgetTaskModel extends TaskModelBase {
+    private mxObj: mendix.lib.MxObject
+    private taskNodeStartAttribute: string
+    private taskNodeEndAttribute: string
+
+
+    constructor(mxObj: mendix.lib.MxObject, taskNodeNameAttribute: string,taskNodeStartAttribute: string, taskNodeEndAttribute: string) {
+        super(mxObj.get(taskNodeNameAttribute) as string,
+            mxObj.getGuid() as string,
+            new Date((mxObj.get(taskNodeStartAttribute) as number)),
+            new Date((mxObj.get(taskNodeEndAttribute) as number)));
+        this.mxObj = mxObj;
+        this.taskNodeStartAttribute = taskNodeStartAttribute;
+        this.taskNodeEndAttribute = taskNodeEndAttribute;
+    }
+
+    onUpdate(): void {
+        this.mxObj.set(this.taskNodeStartAttribute, this.getStart().valueOf())
+        this.mxObj.set(this.taskNodeEndAttribute, this.getEnd().valueOf())
+        mx.data.commit({
+            mxobj: this.mxObj,
+            callback: ()=> {}
+        })
+    }
+}

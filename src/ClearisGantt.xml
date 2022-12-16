@@ -7,6 +7,65 @@
     <description>My widget description</description>
     <icon/>
     <properties>
+        <propertyGroup caption="Data">
+            <propertyGroup caption="Project">
+                <property key="projectEntity" type="entity">
+                    <caption>Project</caption>
+                    <description/>
+                </property>
+                <property key="titleAttribute" type="attribute" required="false" entityProperty="projectEntity">
+                    <caption>Title</caption>
+                    <description/>
+                    <attributeTypes>
+                        <attributeType name="String"/>
+                    </attributeTypes>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Nodes">
+                <property key="taskNodeEntity" type="entity">
+                    <caption>Task type</caption>
+                    <description/>
+                </property>
+                <property key="taskNodeNameAttribute" type="attribute" required="true" entityProperty="taskNodeEntity">
+                    <caption>Name</caption>
+                    <description/>
+                    <attributeTypes>
+                        <attributeType name="String"/>
+                    </attributeTypes>
+                </property>
+                <property key="taskNodeStartAttribute" type="attribute" required="true" entityProperty="taskNodeEntity">
+                    <caption>Start Date</caption>
+                    <description/>
+                    <attributeTypes>
+                        <attributeType name="DateTime"/>
+                    </attributeTypes>
+                </property>
+                <property key="taskNodeEndAttribute" type="attribute" required="true" entityProperty="taskNodeEntity">
+                    <caption>End Date</caption>
+                    <description/>
+                    <attributeTypes>
+                        <attributeType name="DateTime"/>
+                    </attributeTypes>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Microflows">
+                <property key="microflow_projectActivities" type="microflow" entityProperty="projectEntity">
+                    <caption>Get First Gen</caption>
+                    <description/>
+                    <returnType type="Object" isList="true" entityProperty="taskNodeEntity" />
+                </property>
+                <property key="microflow_getChildren" type="microflow" entityProperty="taskNodeEntity">
+                    <caption>Get Children</caption>
+                    <description/>
+                    <returnType type="Object" isList="true" entityProperty="taskNodeEntity" />
+                </property>
+                <property key="microflow_simple" type="microflow" entityProperty="projectEntity">
+                    <caption>Get Simple</caption>
+                    <description/>
+                    <returnType type="String" />
+                </property>
+            </propertyGroup>
+        </propertyGroup>
 
     </properties>
 </widget>

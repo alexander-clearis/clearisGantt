@@ -17,7 +17,6 @@
   "packagePath": "com.mendix.widget.custom",
   "scripts": {
     "startJelte": "concurrently \"pluggable-widgets-tools start:server --open\" \"npm:dev\"",
-
     "start": "pluggable-widgets-tools start:server",
     "dev": "pluggable-widgets-tools start:js",
     "build": "pluggable-widgets-tools build:js",
@@ -35,9 +34,10 @@
     "react-rnd": "^10.3.7"
   },
   "dependencies": {
+    "@jeltemx/mendix-react-widget-utils": "^0.9.0",
     "classnames": "^2.2.6",
+    "mendix-client": "^7.15.8",
     "react-xarrows": "^2.0.2",
-    "uuid": "^9.0.0",
-    "mendix-client": "^7.15.8"
+    "uuid": "^9.0.0"
   }
 }

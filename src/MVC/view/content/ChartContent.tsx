@@ -12,6 +12,8 @@ export interface ChartContentProps {
 }
 export interface ChartContentState {
     timeline: iTimelineController;
+    nodes: iNodeController[];
+
 }
 
 export class ChartContent extends Component<ChartContentProps, ChartContentState> {
@@ -19,10 +21,14 @@ export class ChartContent extends Component<ChartContentProps, ChartContentState
     constructor(props: Readonly<ChartContentProps> | ChartContentProps) {
         super(props);
         this.state = {
-            timeline: this.props.timeline
+            timeline: this.props.timeline,
+            nodes: this.props.nodes
         }
     }
 
+    public rerenderNodes(nodes: iNodeController[]) {
+        this.setState({nodes: nodes})
+    }
     public renderNewTimeline(timeline: iTimelineController) {
         this.setState({timeline: timeline})
     }

@@ -25,6 +25,8 @@ export interface iGanttController {
 
     getTimeline(): iTimelineController;
 
+    addNodes(nodes: iNodeController[]): void;
+
     getNodes(): iNodeController[]
 
     getSnapController(): SnapController
@@ -53,9 +55,13 @@ export class ClearisGanttController implements iGanttController {
         this.viewLength = viewLength;
         this.viewHeight = viewHeight;
         this.nodes = nodes;
-        this.nodes.sort((a, b) => a.getStart().valueOf() < b.getStart().valueOf() ? -1 : a.getStart().valueOf() > b.getStart().valueOf() ? 1 : 0);
+        this.sortNodes();
         this.timeline = this.generateTimeline(this.scaleControllerMap[0])
         this.snapController = new SnapController(this.timeline.getCommonTimeXValues(), NodeController.getNodes())
+    }
+
+    private sortNodes() {
+        this.nodes.sort((a, b) => a.getStart().valueOf() < b.getStart().valueOf() ? -1 : a.getStart().valueOf() > b.getStart().valueOf() ? 1 : 0);
     }
 
     private generateTimeline(scaleMode: ScaleMode): iTimelineController {
@@ -76,6 +82,16 @@ export class ClearisGanttController implements iGanttController {
             )
         }
     }
+
+    public addNodes(nodes: iNodeController[]): void {
+        const currentAmount = this.nodes.length;
+        this.nodes.push(...nodes);
+        this.sortNodes();
+        this.chartContent.current?.rerenderNodes(this.nodes);
+        if (currentAmount == 0 || this.nodes[0].getStart().valueOf() <= this.timeline.startDate().valueOf() || this.nodes[this.nodes.length - 1].getEnd().valueOf() <= this.timeline.endDate().valueOf())
+            this.timeline = this.generateTimeline(this.timeline.getScaleMode());
+            }
+
 
     getTitle(): string {
         return this.title;
