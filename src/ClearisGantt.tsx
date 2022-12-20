@@ -4,7 +4,7 @@ import "./ui/ClearisGantt.css";
 import {ClearisGanttController, iGanttController} from "./MVC/controller/ClearisGanttController";
 import {ClearsGanttContainer} from "./MVC/view/ClearisGanttContainer";
 import {MendixMicroflow} from "./MendixMicroflow";
-import {iTaskModel, MendixCustomWidgetTaskModel, MendixModelController} from "./MVC/model/TaskModel";
+import {MendixCustomWidgetTaskModel, MendixModelController} from "./MVC/model/TaskModel";
 import {TaskController} from "./MVC/controller/TaskController";
 import {MendixOpenForm} from "./MendixOpenForm";
 import {iNodeController} from "./MVC/controller/NodeController";
