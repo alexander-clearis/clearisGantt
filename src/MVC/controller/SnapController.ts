@@ -28,6 +28,15 @@ export class SnapController {
         this.currentCommonTimeXvalues = newValues;
     }
 
+    public newNodes(nodes: iNodeController[]) {
+        this.nodes = nodes;
+    }
+
+    public newSetup(commonTimeXValues: timeXvalue[], nodes: iNodeController[]) {
+        this.currentCommonTimeXvalues = commonTimeXValues
+        this.nodes = nodes;
+    }
+
     public getUsageProps(): useSnapHelper {
         return {
             getSnapOnDrag: this.getSnapPoint,
@@ -63,9 +72,12 @@ export class SnapController {
         pos = Math.round(pos)
         const availablePoints = this.currentCommonTimeXvalues.concat(this.getNodeValues());
 
+        const before = this.findClosest(availablePoints.filter(value => value.x <= pos), pos);
+        const after = this.findClosest(availablePoints.filter(value => value.x > pos), pos);
+
         return {
             before: this.findClosest(availablePoints.filter(value => value.x <= pos), pos),
-            after: this.findClosest(availablePoints.filter(value => value.x > pos), pos)
+            after: after ?? before
         }
     }
 

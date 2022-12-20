@@ -10,6 +10,7 @@ export interface TaskViewWrapperProps extends NodeViewWrapperProps {
     updateOnResize: (newStart?: Date, newEnd?: Date) => void;
     getFirstChild: () => iNodeController | undefined
     getLastChild: () => iNodeController | undefined
+    color?: string
 }
 
 export interface TaskViewWrapperState extends NodeViewWrapperState {
@@ -47,26 +48,7 @@ export class TaskViewWrapper extends NodeViewWrapper<TaskViewWrapperProps, TaskV
     }
 
     private onResizeStop = (_dir: ResizeDirection, timeXvalue: timeXvalue) => {
-        console.log(
-            {
-                dir: _dir,
-                timeXvalue: timeXvalue,
-                firstChild: {
-                    name: this.props.getFirstChild()?.getName(),
-                    start: this.props.getFirstChild()?.getStartEndView()?.start,
-                    end: this.props.getFirstChild()?.getStartEndView()?.end,
-                    startDate: this.props.getFirstChild()?.getStart(),
-                    endDate: this.props.getFirstChild()?.getEnd()
-                },
-                lastChild: {
-                    name: this.props.getLastChild()?.getName(),
-                    start: this.props.getLastChild()?.getStartEndView()?.start,
-                    end: this.props.getLastChild()?.getStartEndView()?.end,
-                    startDate: this.props.getLastChild()?.getStart(),
-                    endDate: this.props.getLastChild()?.getEnd()
-                }
-            }
-        )
+
         if ((_dir === "left")) {
             const firstChild = this.props.getFirstChild();
             if ((firstChild && firstChild.getStartEndView()?.start) && timeXvalue.x >= firstChild.getStartEndView()!.start) {
@@ -103,7 +85,8 @@ export class TaskViewWrapper extends NodeViewWrapper<TaskViewWrapperProps, TaskV
                              onDragStop={this.onDragStop}
                              onResizeStop={this.onResizeStop}
                              useSnapHelper={this.props.snapController}
-
+                             onClick={this.props.onClick}
+                             color={this.props.color}
         />;
     }
 }

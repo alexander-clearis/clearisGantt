@@ -10,6 +10,7 @@ export interface ChartContentProps {
     nodes: iNodeController[];
     snapController: SnapController;
 }
+
 export interface ChartContentState {
     timeline: iTimelineController;
     nodes: iNodeController[];
@@ -27,21 +28,29 @@ export class ChartContent extends Component<ChartContentProps, ChartContentState
     }
 
     public rerenderNodes(nodes: iNodeController[]) {
-        this.setState({nodes: nodes})
+        this.setState({nodes: nodes}, () => {
+        })
     }
+
     public renderNewTimeline(timeline: iTimelineController) {
-        this.setState({timeline: timeline})
+        this.setState({timeline: timeline}, () => {
+        })
+    }
+
+    public renderNewSetUp(timeline: iTimelineController, nodes: iNodeController[]) {
+        this.setState({timeline: timeline, nodes: nodes})
     }
 
     render() {
         return (
-            <div className={"mx-groupbox-body ChartBody"}>
-                <div className={"ChartContent"}>
+            <div className={"ChartContent"}>
+
                     <ContentScaleHeader timeline={this.state.timeline}/>
-                    <div className={"ContentContainer"}>
-                        <ContentScaleBody timeline={this.state.timeline}></ContentScaleBody>
-                        <NodeContent timeline={this.state.timeline} nodes={this.props.nodes} snapController={this.props.snapController}> </NodeContent>
-                    </div>
+
+                <div className={"ContentContainer"}>
+                    <ContentScaleBody timeline={this.state.timeline}></ContentScaleBody>
+                    <NodeContent timeline={this.state.timeline} nodes={this.props.nodes}
+                                 snapController={this.props.snapController}> </NodeContent>
                 </div>
             </div>
         )

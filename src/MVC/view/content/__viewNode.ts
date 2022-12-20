@@ -29,7 +29,7 @@ export interface NodeViewWrapperProps {
     dateToNumber: (date1?: Date, date2?: Date) => number;
     numberToDate: (value: number) => Date;
     updateOnDrag: (start: Date) => void
-
+    onClick: () => void
     //Dragging
     // onDragStart: (startEnd: StartEndClearis) => void;
     // onDrag:  (startEnd: StartEndClearis) => void;

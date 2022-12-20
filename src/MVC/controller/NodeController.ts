@@ -41,17 +41,19 @@ export interface iNodeController {
     getFirstChild(): iNodeController | undefined;
     getLastChild(): iNodeController | undefined;
 
+    onClick: () => void;
+
 }
 
 export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWrapper> implements iNodeController {
     protected nodeModel: M;
     protected nodeView: React.RefObject<V> = React.createRef<V>();
+    protected onClickAction: ()=> void
     protected parent: iNodeController | undefined
-    protected children: iNodeController[] | undefined
 
+    protected children: iNodeController[] | undefined
     protected _display: boolean = true
     protected _displayChildren: boolean = false;
-
 
     public static Nodes: iNodeController[] = [];
 
@@ -63,16 +65,24 @@ export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWr
         return this.Nodes.find(node => node.getID() === id);
     }
 
-    constructor(nodeModel: M, children?: iNodeController[]) {
+    constructor(nodeModel: M, onClickAction: () => void, children?: iNodeController[]) {
         NodeController.Nodes.push(this)
 
         this.nodeModel = nodeModel;
-        this.children = children;
-        this.children?.sort((a, b) => a.getStart().valueOf() < b.getStart().valueOf() ? -1 : a.getStart().valueOf() > b.getStart().valueOf() ? 1 : 0);
-        this.children?.forEach(child => {
-            child.addParent(this)
-            child.setDisplay(this._displayChildren)
+        this.nodeModel.addSubscribeOnChange((start, end) => {
+            this.updateViewStartEnd(start, end)
         })
+
+        if(children && children.length > 0){
+            this.children = children;
+            this.children?.sort((a, b) => a.getStart().valueOf() < b.getStart().valueOf() ? -1 : a.getStart().valueOf() > b.getStart().valueOf() ? 1 : 0);
+            this.children?.forEach(child => {
+                child.addParent(this)
+                child.setDisplay(this._displayChildren)
+            })
+        }
+
+        this.onClickAction = onClickAction;
     }
 
 
@@ -207,4 +217,8 @@ export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWr
     getViewRef(): RefObject<V> {
         return this.nodeView;
     };
+
+    onClick = (): void => {
+        this.onClickAction();
+    }
 }

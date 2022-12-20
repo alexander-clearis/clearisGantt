@@ -30,8 +30,8 @@ export class SelectScaleControls extends Component<SelectScaleControlProps>{
     render() {
         return (
             <div className="mx-dropdown form-group">
-                <label className="control-label col-sm-3" htmlFor="selectScaleMode">Scale</label>
-                <select className="form-control" id="selectScaleMode"
+                <label className="control-label col-sm-3" htmlFor="selectScaleModeClearisGantt" id={"selectScaleModeClearisGantt-label"}>Scale</label>
+                <select className="form-control" id="selectScaleModeClearisGantt"
                         onChange={this.onChange}>
                     {
                         this.selectOptions()

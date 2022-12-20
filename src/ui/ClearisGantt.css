@@ -6,11 +6,10 @@ Place your custom CSS here
 @import "Task.css";
 
 
-.GanttLayout {
+.GanttContent {
     display: flex;
     flex-flow: column;
     max-height: 83vh;
-    min-height: 83vh;
 }
 
 .ChartBody {
@@ -33,4 +32,7 @@ Place your custom CSS here
     height: 70px;
     background-color: white;
     z-index: 1;
+}
+.button-controls button{
+    margin-right: 0.3em;
 }

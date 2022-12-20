@@ -24,10 +24,7 @@ export class MendixMicroflow {
         return context;
     }
     executeToConsole(): void {
-        console.log('executing microflow   ', this.name)
-        const callBack = (obj: any) => {
-                console.log('result microflow   ', this.name)
-                console.log(obj)
+        const callBack = (_obj: any) => {
             }
         mx.data.action({
             params: {
@@ -47,7 +44,6 @@ export class MendixMicroflow {
 
     async execute(): Promise<string | number | boolean | mendix.lib.MxObject | mendix.lib.MxObject[]> {
         return new Promise((resolve, reject) => {
-            console.log("ClearisGantt executed: ", this.name)
             mx.data.action({
                 params: {
                     actionname: this.name

@@ -9,7 +9,16 @@ import {SnapController} from "./SnapController";
 export interface iGanttController {
     getTitle(): string
 
+    bindSave(): void
+
+    bindCancel(): void
+
     setTitle(title: string): void
+
+    setSave(newSave: () => void): void
+
+    setCancel(newCancel: () => void): void
+
 
     getViewLength(): number
 
@@ -40,6 +49,12 @@ export class ClearisGanttController implements iGanttController {
     private chartContent: RefObject<ChartContent> = React.createRef<ChartContent>();
     private nodes: iNodeController[]
     private snapController: SnapController;
+    private saveMethod: () => void = () => {
+        console.log("NO SAVE ACTION!, use setSave")
+    };
+    private cancelMethod: () => void = () => {
+        console.log("NO CANCEL ACTION! use setCancel")
+    }
 
     readonly scaleControllerMap = [
         // new ScaleMode("Day of the week", new WeekScale(), 1, new DayScale()),
@@ -61,22 +76,22 @@ export class ClearisGanttController implements iGanttController {
     }
 
     private sortNodes() {
-        this.nodes.sort((a, b) => a.getStart().valueOf() < b.getStart().valueOf() ? -1 : a.getStart().valueOf() > b.getStart().valueOf() ? 1 : 0);
+        this.nodes = this.nodes.sort((a, b) => a.getStart().valueOf() < b.getStart().valueOf() ? -1 : a.getStart().valueOf() > b.getStart().valueOf() ? 1 : 0);
     }
 
     private generateTimeline(scaleMode: ScaleMode): iTimelineController {
         const nodesLength = this.nodes.length;
         if (nodesLength > 0) {
             return new TimelineController(
-                scaleMode.parent().floorDate(this.nodes[0].getStart()),
-                scaleMode.parent().ceilDate(this.nodes[nodesLength - 1].getEnd()),
+                this.nodes[0].getStart(),
+                this.nodes[nodesLength - 1].getEnd(),
                 this.viewLength,
                 scaleMode
             )
         } else {
             return new TimelineController(
-                new Date(2021, 0, 1),
-                new Date(2024, 0, 1),
+                new Date(),
+                new Date(),
                 this.viewLength,
                 scaleMode
             )
@@ -87,18 +102,38 @@ export class ClearisGanttController implements iGanttController {
         const currentAmount = this.nodes.length;
         this.nodes.push(...nodes);
         this.sortNodes();
-        this.chartContent.current?.rerenderNodes(this.nodes);
-        if (currentAmount == 0 || this.nodes[0].getStart().valueOf() <= this.timeline.startDate().valueOf() || this.nodes[this.nodes.length - 1].getEnd().valueOf() <= this.timeline.endDate().valueOf())
+
+        if (currentAmount == 0 || this.nodes[0].getStart().valueOf() <= this.timeline.startDate().valueOf() || this.nodes[this.nodes.length - 1].getEnd().valueOf() <= this.timeline.endDate().valueOf()) {
             this.timeline = this.generateTimeline(this.timeline.getScaleMode());
-            }
+            this.snapController.newSetup(this.timeline.getCommonTimeXValues(), this.nodes);
+            this.chartContent.current?.renderNewSetUp(this.timeline, this.nodes)
+        } else {
+            this.snapController.newNodes(this.nodes)
+            this.chartContent.current?.rerenderNodes(this.nodes);
+        }
+    }
 
 
     getTitle(): string {
         return this.title;
     }
+    bindSave = (): void => {
+        this.saveMethod()
+    }
+    bindCancel= (): void =>{
+        this.cancelMethod()
+    }
 
     setTitle(title: string): void {
         this.title = title;
+    }
+
+    setSave(newSave: () => void): void {
+        this.saveMethod = newSave;
+    }
+
+    setCancel(newCancel: () => void): void {
+        this.cancelMethod = newCancel;
     }
 
     getViewLength(): number {
@@ -143,4 +178,6 @@ export class ClearisGanttController implements iGanttController {
     getSnapController(): SnapController {
         return this.snapController;
     }
+
+
 }

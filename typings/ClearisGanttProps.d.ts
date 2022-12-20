@@ -16,10 +16,11 @@ export interface ClearisGanttContainerProps extends CommonProps {
     titleAttribute: string
     taskNodeEntity: string
     taskNodeNameAttribute: string
+    taskNodeColorAttribute?: string
     taskNodeStartAttribute: string
     taskNodeEndAttribute: string
     microflow_projectActivities: any
     microflow_getChildren: any
-    microflow_simple: any
+    onClickAction: any
 
 }

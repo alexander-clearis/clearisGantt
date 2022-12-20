@@ -2,10 +2,12 @@ import {Component, createElement, ReactNode} from "react";
 import {ClearisGanttContainerProps} from "../typings/ClearisGanttProps";
 import "./ui/ClearisGantt.css";
 import {ClearisGanttController, iGanttController} from "./MVC/controller/ClearisGanttController";
-import {ClearsGanttContainer} from "./MVC/view/container/ClearisGanttContainer";
+import {ClearsGanttContainer} from "./MVC/view/ClearisGanttContainer";
 import {MendixMicroflow} from "./MendixMicroflow";
-import {MendixCustomWidgetTaskModel} from "./MVC/model/TaskModel";
+import {iTaskModel, MendixCustomWidgetTaskModel, MendixModelController} from "./MVC/model/TaskModel";
 import {TaskController} from "./MVC/controller/TaskController";
+import {MendixOpenForm} from "./MendixOpenForm";
+import {iNodeController} from "./MVC/controller/NodeController";
 
 // import {TaskController} from "./MVC/controller/TaskController";
 // import {iTaskModel, MockTaskModel} from "./MVC/model/TaskModel";
@@ -66,7 +68,42 @@ class ClearisGantt extends Component<ClearisGanttContainerProps, ClearisGanttSta
             MxContextObj: this.props.mxObject
         }
 
+
         this.service = new ClearisGanttController(this.getChartTitle(), 1500, 640, []);
+    }
+
+    async collectChildren(parentObj: mendix.lib.MxObject): Promise<iNodeController[] | undefined> {
+        return new MendixMicroflow(this.props.microflow_getChildren, this.props.mxform, parentObj).execute().then(
+            microflowResult => {
+                return MendixCustomWidgetTaskModel
+                    .factory((microflowResult as mendix.lib.MxObject[]), this.props.taskNodeNameAttribute, this.props.taskNodeStartAttribute, this.props.taskNodeEndAttribute, this.props.taskNodeColorAttribute)
+            }
+        ).then(models => {
+            return models.map(childModel => {
+                return new TaskController(
+                    childModel,
+                    () => {
+                        new MendixOpenForm(this.props.onClickAction).open(childModel.getMxObj())
+                    }
+            })
+        })
+    }
+
+    async collectNodes(): Promise<iNodeController[]> {
+        return new MendixMicroflow(this.props.microflow_projectActivities as string, this.props.mxform, this.props.mxObject).execute().then(
+            microflowResult => {
+                return MendixCustomWidgetTaskModel
+                    .factory((microflowResult as mendix.lib.MxObject[]), this.props.taskNodeNameAttribute, this.props.taskNodeStartAttribute, this.props.taskNodeEndAttribute, this.props.taskNodeColorAttribute)
+                    .map(model => {
+                        return new TaskController(
+                            model,
+                            () => {
+                                new MendixOpenForm(this.props.onClickAction).open(model.getMxObj())
+                                console.log(this.collectChildren(model.getMxObj()))
+                            })
+                    })
+            }
+        );
     }
 
 
@@ -75,23 +112,24 @@ class ClearisGantt extends Component<ClearisGanttContainerProps, ClearisGanttSta
             this.setState({MxContextObj: this.props.mxObject});
             this.updateChartTitle();
 
+            this.collectNodes().then(collectedNodes => this.service.addNodes(collectedNodes))
 
-            new MendixMicroflow(this.props.microflow_projectActivities as string, this.props.mxform, this.props.mxObject).execute().then(
-                value => {
-                    const Models = (value as mendix.lib.MxObject[]).map(value => {
-                            return new MendixCustomWidgetTaskModel(value, this.props.taskNodeNameAttribute, this.props.taskNodeStartAttribute, this.props.taskNodeEndAttribute
-                            )
-                        }
-                    )
-                    this.service.addNodes(Models.map(model => {
-                        return new TaskController(model)
-                    }))
-                }
-            );
+            this.service.setCancel(() => {
+                //todo: implement rollback!
+                this.props.mxform.rollback(() => {
+                })
+                this.props.mxform.close();
+            })
+            this.service.setSave(() => {
+                MendixModelController.commit();
+            })
+
         }
     }
 
-    getChartTitle(): string {
+    getChartTitle()
+        :
+        string {
         return this.state.MxContextObj?.get(this.props.titleAttribute) as string ?? "Title not found"
     }
 
@@ -99,8 +137,9 @@ class ClearisGantt extends Component<ClearisGanttContainerProps, ClearisGanttSta
         this.service.setTitle(this.getChartTitle());
     }
 
-
-    render(): ReactNode {
+    render()
+        :
+        ReactNode {
         this.updateChartTitle();
 
         return <ClearsGanttContainer GanttController={this.service}/>

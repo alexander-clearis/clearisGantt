@@ -49,7 +49,6 @@ export class TimelineController implements iTimelineController {
         this.scaleMode = scaleMode
 
         this._startDate = this.scaleMode.parent().dateByIndex(startDate, -1)
-        console.log(this._startDate)
         this._endDate = this.scaleMode.parent().ceilDate(this.scaleMode.parent().dateByIndex(endDate, 1))
         let amountOfDaysInView = this.calculateAmountOfDays(this._startDate, scaleMode.parent().dateByIndex(this._startDate, scaleMode.parent_in_view()))
 
@@ -61,14 +60,6 @@ export class TimelineController implements iTimelineController {
         }
         this.commonTimeXValues.sort((a, b) => a.x < b.x ? -1 : a.x > b.x ? 1 : 0);
 
-
-        console.log( {
-            startDate: this._startDate.toLocaleString(),
-            endDate: this._endDate.toLocaleString(),
-            viewLength: viewLength,
-            amountOfDays: amountOfDaysInView,
-            dayPixeLength: this.dayPixeLength
-        })
     }
 
     public calculateAmountOfDays(startDate: Date, endDate: Date): number {
