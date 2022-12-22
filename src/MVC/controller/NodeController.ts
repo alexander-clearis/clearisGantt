@@ -1,7 +1,7 @@
 import React, {RefObject} from "react";
 import {iNodeViewWrapper} from "../view/content/__viewNode";
-import {iGanttNode} from "../model/TaskModel";
 import {MaxBoundsClearis, StartEndClearis} from "../../util/ExtraTypes";
+import {iNodeModel} from "../model/NodeModel";
 
 export interface iNodeController {
     getID(): string;
@@ -32,23 +32,24 @@ export interface iNodeController {
 
     displayChildren(): boolean;
 
-    getStartEndView(): StartEndClearis | undefined
+    getStartEndView: () => StartEndClearis | undefined
 
     getMaxBounds: () => MaxBoundsClearis;
 
     getViewRef(): RefObject<iNodeViewWrapper>
 
     getFirstChild(): iNodeController | undefined;
+
     getLastChild(): iNodeController | undefined;
 
     onClick: () => void;
 
 }
 
-export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWrapper> implements iNodeController {
+export abstract class NodeController<M extends iNodeModel, V extends iNodeViewWrapper> implements iNodeController {
     protected nodeModel: M;
     protected nodeView: React.RefObject<V> = React.createRef<V>();
-    protected onClickAction: ()=> void
+    protected onClickAction: () => void
     protected parent: iNodeController | undefined
 
     protected children: iNodeController[] | undefined
@@ -73,7 +74,7 @@ export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWr
             this.updateViewStartEnd(start, end)
         })
 
-        if(children && children.length > 0){
+        if (children && children.length > 0) {
             this.children = children;
             this.children?.sort((a, b) => a.getStart().valueOf() < b.getStart().valueOf() ? -1 : a.getStart().valueOf() > b.getStart().valueOf() ? 1 : 0);
             this.children?.forEach(child => {
@@ -179,13 +180,14 @@ export abstract class NodeController<M extends iGanttNode, V extends iNodeViewWr
     }
 
     getMaxBounds = (): MaxBoundsClearis => {
+
         const parentStartEnd = this.parent?.getStartEndView();
-        const firstChild = this.getFirstChild()?.getStartEndView();
-        const last = this.children?.[this.children?.length - 1].getStartEndView();
+        const firstChild = this.children ? Math.min(...this.children.map(c => c.getStartEndView()!.start)) : undefined;
+        const last = this.children ? Math.max(...this.children.map(c => c.getStartEndView()!.end)) : undefined;
         return {
             StartMinL: parentStartEnd?.start,
-            StartMaxL: firstChild?.start,
-            EndMinR: last?.end,
+            StartMaxL: firstChild,
+            EndMinR: last,
             EndMaxR: parentStartEnd?.end
         }
     }

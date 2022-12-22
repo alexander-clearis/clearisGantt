@@ -54,6 +54,10 @@
                         <attributeType name="DateTime"/>
                     </attributeTypes>
                 </property>
+                <property key="taskNodeParentAssoc" type="entity" isPath="yes" pathType="reference" entityProperty="taskNodeEntity">
+                    <caption>parent</caption>
+                    <description></description>
+                </property>
             </propertyGroup>
             <propertyGroup caption="Microflows">
                 <property key="microflow_projectActivities" type="microflow" entityProperty="projectEntity">

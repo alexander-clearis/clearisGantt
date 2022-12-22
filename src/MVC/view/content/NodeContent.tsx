@@ -43,7 +43,7 @@ export class NodeContent extends Component<NodeContentProps> {
                         bindDisplayChildren={node.bindDisplayChildren}
 
                         getFirstChild={node.getFirstChild}
-                        getLastChild={node.getFirstChild}
+                        getLastChild={node.getLastChild}
                         onClick={node.onClick}
                         color={node.getColor()}
                     />

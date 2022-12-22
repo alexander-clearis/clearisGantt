@@ -23,6 +23,7 @@ export class MendixMicroflow {
 
         return context;
     }
+
     executeToConsole(): void {
         const callBack = (_obj: any) => {
             }

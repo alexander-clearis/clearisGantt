@@ -49,6 +49,9 @@ export class ClearisGanttController implements iGanttController {
     private chartContent: RefObject<ChartContent> = React.createRef<ChartContent>();
     private nodes: iNodeController[]
     private snapController: SnapController;
+
+
+
     private saveMethod: () => void = () => {
         console.log("NO SAVE ACTION!, use setSave")
     };
@@ -100,6 +103,7 @@ export class ClearisGanttController implements iGanttController {
 
     public addNodes(nodes: iNodeController[]): void {
         const currentAmount = this.nodes.length;
+        console.log(currentAmount)
         this.nodes.push(...nodes);
         this.sortNodes();
 

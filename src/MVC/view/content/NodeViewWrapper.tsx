@@ -63,6 +63,7 @@ export abstract class NodeViewWrapper<P extends NodeViewWrapperProps, S extends 
     onDragStop = (timeXValue: timeXvalue): void => {
         this.props.previewDragChildren(0);
         if (timeXValue.x != this.state.nodeSize.x) {
+
             this.props.updateOnDrag(timeXValue.date);
         } else {
             this.onClickDisplayChildren()
