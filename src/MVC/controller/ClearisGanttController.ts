@@ -103,7 +103,6 @@ export class ClearisGanttController implements iGanttController {
 
     public addNodes(nodes: iNodeController[]): void {
         const currentAmount = this.nodes.length;
-        console.log(currentAmount)
         this.nodes.push(...nodes);
         this.sortNodes();
 

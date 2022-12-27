@@ -1,4 +1,4 @@
-import {Component, createElement} from "react";
+import React, {Component, createElement} from "react";
 import {ContentScaleBody, ContentScaleHeader} from "./ContentScale";
 import {iTimelineController} from "../../controller/TimelineController";
 import {NodeContent} from "./NodeContent";
@@ -14,16 +14,18 @@ export interface ChartContentProps {
 export interface ChartContentState {
     timeline: iTimelineController;
     nodes: iNodeController[];
+    scrollDate: Date
 
 }
 
 export class ChartContent extends Component<ChartContentProps, ChartContentState> {
-
+    private ref = React.createRef<HTMLDivElement>();
     constructor(props: Readonly<ChartContentProps> | ChartContentProps) {
         super(props);
         this.state = {
             timeline: this.props.timeline,
-            nodes: this.props.nodes
+            nodes: this.props.nodes,
+            scrollDate: this.props.timeline.startDate()
         }
     }
 
@@ -33,17 +35,29 @@ export class ChartContent extends Component<ChartContentProps, ChartContentState
     }
 
     public renderNewTimeline(timeline: iTimelineController) {
-        this.setState({timeline: timeline}, () => {
+        this.setState({timeline: timeline, scrollDate: this.getNewScrollDate(timeline.startDate(), timeline.endDate())}, () => {
+            this.ref.current?.scrollTo(this.state.timeline.dateToNumber(this.state.scrollDate), this.ref.current.scrollTop)
         })
     }
 
     public renderNewSetUp(timeline: iTimelineController, nodes: iNodeController[]) {
-        this.setState({timeline: timeline, nodes: nodes})
+        this.setState({timeline: timeline, nodes: nodes}, () => {
+
+        })
     }
+
+    private getCurrentScrollDate(): Date {
+        return this.state.timeline.numberToDate(this.ref.current?.scrollLeft ?? 0);
+    }
+    private getNewScrollDate(min: Date, max: Date): Date {
+        const current = this.getCurrentScrollDate()
+        return (current.valueOf() < min.valueOf()) ? min : (current.valueOf() > max.valueOf()) ? max : current
+    }
+
 
     render() {
         return (
-            <div className={"ChartContent"}>
+            <div className={"ChartContent"} ref={this.ref}>
 
                     <ContentScaleHeader timeline={this.state.timeline}/>
 
@@ -54,7 +68,5 @@ export class ChartContent extends Component<ChartContentProps, ChartContentState
                 </div>
             </div>
         )
-
-
     }
 }

@@ -1,4 +1,4 @@
-    import React, {createElement} from "react";
+    import React, {createElement, Fragment} from "react";
 import {TaskNodeView} from "./TaskNodeView";
 import {iNodeViewWrapper, NodeViewWrapperProps, NodeViewWrapperState} from "./__viewNode";
 import {NodeViewWrapper} from "./NodeViewWrapper";
@@ -78,15 +78,18 @@ export class TaskViewWrapper extends NodeViewWrapper<TaskViewWrapperProps, TaskV
         React.ReactNode {
 
 
-        return <TaskNodeView name={this.props.name} anchorID={this.anchorID} nodeSize={this.getNodeSize()}
-                             getMaxBounds={this.props.getMaxBounds}
-                             timelineLength={this.props.timeLineLength} dayPixelLength={this.props.dayPixelLength}
-                             onDrag={this.onDrag}
-                             onDragStop={this.onDragStop}
-                             onResizeStop={this.onResizeStop}
-                             useSnapHelper={this.props.snapController}
-                             onClick={this.props.onClick}
-                             color={this.props.color}
-        />;
+        return <Fragment>
+            <TaskNodeView name={this.props.name} anchorID={this.anchorID} nodeSize={this.getNodeSize()}
+                          getMaxBounds={this.props.getMaxBounds}
+                          timelineLength={this.props.timeLineLength} dayPixelLength={this.props.dayPixelLength}
+                          onDrag={this.onDrag}
+                          onDragStop={this.onDragStop}
+                          onResizeStop={this.onResizeStop}
+                          useSnapHelper={this.props.snapController}
+                          onClick={this.props.onClick}
+                          color={this.props.color}
+            />
+
+        </Fragment>;
     }
 }

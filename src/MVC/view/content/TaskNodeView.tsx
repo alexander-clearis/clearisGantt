@@ -1,8 +1,9 @@
-import {MaxBoundsClearis, NodeViewSize, StartEndClearis, timeXvalue} from "../../../util/ExtraTypes";
+import {MaxBoundsClearis, NodeViewSize, StartEndViewClearis, timeXvalue} from "../../../util/ExtraTypes";
 import React, {createElement} from "react";
 import {DraggableData, ResizableDelta, Rnd} from "react-rnd";
 import {ResizeDirection} from "re-resizable";
 import {SnapPoint, useSnapHelper} from "../../controller/SnapController";
+import {useXarrow} from "react-xarrows";
 
 
 export interface nodeViewProps {
@@ -24,22 +25,26 @@ export interface TaskViewProps extends nodeViewProps {
 }
 
 export const TaskNodeView = (props: TaskViewProps) => {
-    const RND_WrapperRef: React.RefObject<Rnd> = React.createRef<Rnd>()
+    const RND_WrapperRef: React.RefObject<Rnd> = React.createRef<Rnd>();
 
-    // @ts-ignore
-    let maxBounds: MaxBoundsClearis = undefined;
+    useXarrow()
+
+    const updateXarrow = useXarrow();
+
+    let maxBounds: MaxBoundsClearis  = props.getMaxBounds();
 
     const getBounds = () => {
         maxBounds = props.getMaxBounds()
         setMaxBoundsDrag();
     };
+
     const setMaxBoundsDrag = () => {
         RND_WrapperRef.current?.setState((prevState) => {
             return {
                 ...prevState,
                 bounds: {
-                    left: maxBounds.StartMinL ?? 0,
-                    right: (maxBounds.EndMaxR ?? props.timelineLength) - props.nodeSize.width,
+                    left: maxBounds.StartMinL?.x ?? 0,
+                    right: (maxBounds.EndMaxR?.x ?? props.timelineLength) - props.nodeSize.width,
                     top: 0,
                     bottom: 0
                 }
@@ -50,7 +55,7 @@ export const TaskNodeView = (props: TaskViewProps) => {
 
     const calculateMaxWidth = (dir: ResizeDirection): number => {
         const currentSize = props.nodeSize
-        return (dir === "left") ? (currentSize.x - (maxBounds.StartMinL ?? 0)) + currentSize.width : ((maxBounds.EndMaxR ?? props.timelineLength) - currentSize.x);
+        return (dir === "left") ? (currentSize.x - (maxBounds.StartMinL?.x ?? 0)) + currentSize.width : ((maxBounds.EndMaxR?.x ?? props.timelineLength) - currentSize.x);
     }
     const setMaxBoundsResize = (dir: ResizeDirection) => {
         getBounds();
@@ -66,7 +71,7 @@ export const TaskNodeView = (props: TaskViewProps) => {
     }
 
 
-    const calculateResizeStartEnd = (dir: ResizeDirection, delta?: ResizableDelta): StartEndClearis => {
+    const calculateResizeStartEnd = (dir: ResizeDirection, delta?: ResizableDelta): StartEndViewClearis => {
         if (delta) {
             return (dir === "left") ? {
                 start: props.nodeSize.x - delta.width,
@@ -82,14 +87,14 @@ export const TaskNodeView = (props: TaskViewProps) => {
             }
         }
     }
-    const useOnResizeBoundsCorrection = (dir: ResizeDirection, startEnd: StartEndClearis): StartEndClearis => {
+    const useOnResizeBoundsCorrection = (dir: ResizeDirection, startEnd: StartEndViewClearis): StartEndViewClearis => {
         if (dir === "left" && maxBounds.StartMaxL) {
             //check if left out of bounds.
             if (validLeftResize(startEnd.start) === false) {
-                RND_WrapperRef.current?.resizable?.setState({width: (props.nodeSize.width + props.nodeSize.x) - maxBounds.StartMaxL})
-                RND_WrapperRef.current?.updatePosition({x: maxBounds.StartMaxL, y: 0})
+                RND_WrapperRef.current?.resizable?.setState({width: (props.nodeSize.width + props.nodeSize.x) - maxBounds.StartMaxL?.x})
+                RND_WrapperRef.current?.updatePosition({x: maxBounds.StartMaxL?.x, y: 0})
                 return {
-                    start: maxBounds.StartMaxL,
+                    start: maxBounds.StartMaxL?.x,
                     end: startEnd.end
                 }
             } else {
@@ -97,11 +102,11 @@ export const TaskNodeView = (props: TaskViewProps) => {
             }
         } else if (dir === "right" && maxBounds.EndMinR) {
             if (validRightResize(startEnd.end) === false) {
-                RND_WrapperRef.current?.resizable?.setState({width: maxBounds.EndMinR - props.nodeSize.x})
+                RND_WrapperRef.current?.resizable?.setState({width: maxBounds.EndMinR?.x - props.nodeSize.x})
                 RND_WrapperRef.current?.updatePosition({x: props.nodeSize.x, y: 0})
                 return {
                     start: startEnd.start,
-                    end: maxBounds.EndMinR
+                    end: maxBounds.EndMinR?.x
                 }
             } else {
                 return startEnd
@@ -110,10 +115,10 @@ export const TaskNodeView = (props: TaskViewProps) => {
         return startEnd
     }
     const validLeftResize = (x: number): boolean => {
-        return !(maxBounds.StartMaxL != undefined && x >= maxBounds.StartMaxL);
+        return !(maxBounds.StartMaxL != undefined && x >= maxBounds.StartMaxL?.x);
     }
     const validRightResize = (x: number): boolean => {
-        return !(maxBounds.EndMinR != undefined && x <= maxBounds.EndMinR);
+        return !(maxBounds.EndMinR != undefined && x <= maxBounds.EndMinR?.x);
     }
 
     const closestToSnap = (pos: number, snapPoint: SnapPoint): timeXvalue => {
@@ -126,20 +131,17 @@ export const TaskNodeView = (props: TaskViewProps) => {
     }
 
 
-    const onResizeShowSnap = (dir: ResizeDirection, startEnd: StartEndClearis) => {
+    const onResizeShowSnap = (dir: ResizeDirection, startEnd: StartEndViewClearis) => {
         const resizePoint = (dir === "left") ? startEnd.start : startEnd.end
         props.useSnapHelper.showSnapHelper(closestToSnap(resizePoint, props.useSnapHelper.getSnapOnDrag(resizePoint)).x)
     }
 
     const onDragStop = (data: DraggableData): void => {
         props.useSnapHelper.hideHelper()
-        const closestOnSnap = closestToSnap(data.x, props.useSnapHelper.getSnapOnDrag(data.x));
-        if((closestOnSnap + props.nodeSize.width) >= maxBounds.EndMaxR) {
 
-        }
         props.onDragStop(closestToSnap(data.x, props.useSnapHelper.getSnapOnDrag(data.x)));
     }
-    const onResizeStop = (dir: ResizeDirection, startEnd: StartEndClearis): void => {
+    const onResizeStop = (dir: ResizeDirection, startEnd: StartEndViewClearis): void => {
         const resizePoint = (dir === "left") ? startEnd.start : startEnd.end
         props.onResizeStop(dir, closestToSnap(resizePoint, props.useSnapHelper.getSnapOnDrag(resizePoint)))
         props.useSnapHelper.hideHelper()
@@ -186,10 +188,13 @@ export const TaskNodeView = (props: TaskViewProps) => {
                     props.onDrag(_data.x)
                     _e.preventDefault()
 
+
+                    updateXarrow();
                 }}
 
                 onDragStop={(_e, _data) => {
                     onDragStop(_data);
+                    updateXarrow();
                     // _e.preventDefault()
                     // _e.stopPropagation();
                 }}
@@ -203,10 +208,14 @@ export const TaskNodeView = (props: TaskViewProps) => {
                 onResize={(_e, _dir, _elementRef, _delta) => {
                     const newStrartEnd = useOnResizeBoundsCorrection(_dir, calculateResizeStartEnd(_dir, _delta));
                     onResizeShowSnap(_dir, newStrartEnd)
+
+                    updateXarrow();
                 }}
                 onResizeStop={(_e, _dir, _elementRef, _delta) => {
                     const newStartEnd = useOnResizeBoundsCorrection(_dir, calculateResizeStartEnd(_dir, _delta));
                     onResizeStop(_dir, newStartEnd)
+
+                    updateXarrow();
                 }}
     >
 

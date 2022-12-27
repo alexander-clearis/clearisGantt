@@ -1,15 +1,14 @@
-export type StartEndClearis =  {
+export type StartEndViewClearis =  {
     start: number,
     end: number
 }
 
 export type MaxBoundsClearis = {
-    StartMinL: number | undefined,
-    StartMaxL: number | undefined,
-    EndMinR: number | undefined,
-    EndMaxR: number | undefined
+    StartMinL: timeXvalue | undefined,
+    StartMaxL: timeXvalue | undefined,
+    EndMinR: timeXvalue | undefined,
+    EndMaxR: timeXvalue | undefined
 }
-
 
 export type NodeViewSize = {
     x: number

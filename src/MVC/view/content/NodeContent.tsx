@@ -46,6 +46,7 @@ export class NodeContent extends Component<NodeContentProps> {
                         getLastChild={node.getLastChild}
                         onClick={node.onClick}
                         color={node.getColor()}
+                        getChildControllers={node.getChildren}
                     />
                 {
                     (children)?.map(node => this.renderNodeWithChildren(node)) ?? null

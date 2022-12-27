@@ -1,6 +1,6 @@
 import React, {RefObject} from "react";
 import {iNodeViewWrapper} from "../view/content/__viewNode";
-import {MaxBoundsClearis, StartEndClearis} from "../../util/ExtraTypes";
+import {MaxBoundsClearis, StartEndViewClearis, timeXvalue} from "../../util/ExtraTypes";
 import {iNodeModel} from "../model/NodeModel";
 
 export interface iNodeController {
@@ -32,7 +32,7 @@ export interface iNodeController {
 
     displayChildren(): boolean;
 
-    getStartEndView: () => StartEndClearis | undefined
+    getStartEndView: () => StartEndViewClearis | undefined
 
     getMaxBounds: () => MaxBoundsClearis;
 
@@ -49,6 +49,7 @@ export interface iNodeController {
 export abstract class NodeController<M extends iNodeModel, V extends iNodeViewWrapper> implements iNodeController {
     protected nodeModel: M;
     protected nodeView: React.RefObject<V> = React.createRef<V>();
+
     protected onClickAction: () => void
     protected parent: iNodeController | undefined
 
@@ -95,7 +96,7 @@ export abstract class NodeController<M extends iNodeModel, V extends iNodeViewWr
         return this.parent;
     }
 
-    getChildren(): iNodeController[] | undefined {
+    getChildren = (): iNodeController[] | undefined => {
         return this.children;
     }
 
@@ -175,29 +176,58 @@ export abstract class NodeController<M extends iNodeModel, V extends iNodeViewWr
         })
     }
 
-    getStartEndView(): StartEndClearis | undefined {
+    getStartEndView(): StartEndViewClearis | undefined {
         return this.nodeView.current?.getStartEnd()
     }
 
     getMaxBounds = (): MaxBoundsClearis => {
+        let parentTimeXstart: timeXvalue | undefined
+        let parentTimeXend: timeXvalue | undefined
+        let firstChildXstart: timeXvalue | undefined
+        let lastChildTimeXend: timeXvalue | undefined
 
-        const parentStartEnd = this.parent?.getStartEndView();
-        const firstChild = this.children ? Math.min(...this.children.map(c => c.getStartEndView()!.start)) : undefined;
-        const last = this.children ? Math.max(...this.children.map(c => c.getStartEndView()!.end)) : undefined;
+        if (this.parent) {
+            const parentStartEndx = this.parent?.getStartEndView();
+            if (parentStartEndx) {
+                parentTimeXstart = (parentStartEndx) ? {
+                    x: parentStartEndx.start,
+                    date: this.parent?.getStart()
+                } : undefined
+                parentTimeXend = (parentStartEndx) ? {x: parentStartEndx.end, date: this.parent?.getEnd()} : undefined
+            }
+        }
+        const firstChild = this.getFirstChild()
+        const firstChildViewStart = (firstChild) ? firstChild.getStartEndView()?.start : undefined
+        firstChildXstart = (firstChild && firstChildViewStart ) ? {x: firstChildViewStart, date: firstChild.getStart()} : undefined
+
+
+
+        const lastChild = this.getLastChild()
+        const lastChildViewEnd = (lastChild) ? lastChild.getStartEndView()?.end : undefined
+        lastChildTimeXend = (lastChild && lastChildViewEnd ) ? {x: lastChildViewEnd, date: lastChild.getEnd()} : undefined
+
+
         return {
-            StartMinL: parentStartEnd?.start,
-            StartMaxL: firstChild,
-            EndMinR: last,
-            EndMaxR: parentStartEnd?.end
+            StartMinL: parentTimeXstart,
+            StartMaxL: firstChildXstart,
+            EndMinR: lastChildTimeXend,
+            EndMaxR: parentTimeXend
         }
     }
 
     getFirstChild = (): iNodeController | undefined => {
-        return this.children?.[0]
+
+        return this.children?.reduce(function (prev, current) {
+            return prev.getStart() < current.getStart() ? prev : current
+        })
     }
 
     getLastChild = (): iNodeController | undefined => {
-        return this.children?.[this.children?.length - 1]
+
+        return this.children?.reduce(function (prev, current) {
+            return prev.getEnd() > current.getEnd() ? prev : current
+        })
+
     }
 
     getName(): string {

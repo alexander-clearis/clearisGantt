@@ -68,7 +68,7 @@ export class TimelineController implements iTimelineController {
     }
 
 
-    public numberToDate(number: number): Date {
+    public numberToDate = (number: number): Date => {
         const amountOfDays = number / this.dayPixeLength
         return new Date(this._startDate.valueOf() + (amountOfDays * (1000 * 3600 * 24)));
     }

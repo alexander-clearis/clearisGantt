@@ -1,11 +1,12 @@
-import {MaxBoundsClearis, NodeViewSize, StartEndClearis} from "../../../util/ExtraTypes";
+import {MaxBoundsClearis, NodeViewSize, StartEndViewClearis} from "../../../util/ExtraTypes";
 import {useSnapHelper} from "../../controller/SnapController";
+import {iNodeController} from "../../controller/NodeController";
 
 /// GENERIC NODE interface to extend component, and acces trough ref
 export interface iNodeViewWrapper {
     getAnchorID(): string;
     // updateStartEnd(startEnd: StartEndClearis): void;
-    getStartEnd(): StartEndClearis
+    getStartEnd(): StartEndViewClearis
     updateStartEndDate(start: Date, end: Date): void;
     display(value: boolean): void
     viewShift(delta: number): void
@@ -18,29 +19,18 @@ export interface NodeViewWrapperProps {
     id: string;
     displayChildren: boolean;
     display: boolean;
-    size: StartEndClearis;
+    size: StartEndViewClearis;
     timeLineLength: number;
     dayPixelLength: number
     getMaxBounds: () => MaxBoundsClearis;
     bindDisplayChildren: (value: boolean) => void;
     previewDragChildren: (delta: number) => void;
     snapController: useSnapHelper
-
+    getChildControllers: () => iNodeController[] | undefined
     dateToNumber: (date1?: Date, date2?: Date) => number;
     numberToDate: (value: number) => Date;
     updateOnDrag: (start: Date) => void
     onClick: () => void
-    //Dragging
-    // onDragStart: (startEnd: StartEndClearis) => void;
-    // onDrag:  (startEnd: StartEndClearis) => void;
-    // onDragStop:  (startEnd: StartEndClearis) => void
-
-
-    //todo:
-    // getMaxSize: () => {start: number, end: number}
-    // onDragMethods...
-    // update methods...
-
 }
 
 //// wrapper comp state

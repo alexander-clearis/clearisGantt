@@ -64,7 +64,6 @@ class ClearisGantt extends Component<ClearisGanttContainerProps, ClearisGanttSta
 
                 this.setRoot().then(collectedNodes => {
                         this.service.addNodes(collectedNodes)
-                        console.log(this.service.getNodes().length)
 
                     }
                 )
